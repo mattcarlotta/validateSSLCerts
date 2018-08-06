@@ -102,7 +102,7 @@ function _restart_gitlab_container
 #===============================================================================##
 ## SSL CERTIFICATE DATES #
 ##==============================================================================##
-function _show_valid_states()
+function _show_valid_dates()
 {
 	validStart=$(openssl x509 -startdate -noout -in cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
 	validEnd=$(openssl x509 -enddate -noout -in cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
@@ -131,12 +131,12 @@ function _validate_certs()
 	fi
 
 	checkCertStatus=$(openssl x509 -noout -checkend 0 -in $gCertPath/cert.pem)
-	if [[ $checkCertStatus == "Certificate will not expir" ]];
+	if [[ $checkCertStatus == "Certificate will not expire" ]];
 		then
-			_show_valid_states
+			_show_valid_dates
 			printf "$gCurrentTime -- No need to renew your certifications! \n" 																																>> "$gLogPath"
 	else
-		_show_valid_states
+		_show_valid_dates
 		_expired_certs
 		_remove_old_certs
 		_create_new_certs
