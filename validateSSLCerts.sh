@@ -16,6 +16,9 @@
 #        script. Thank you!
 #
 
+#certRootPath
+#/usr/syno/etc/certificate/_archive/
+
 # gitlab container path
 gitlabPath="/volume1/docker/personal/gitlab"
 
@@ -33,6 +36,30 @@ gCurrentDate=$(date +"%m/%d/%Y")
 #current time
 gCurrentTime=$(date +"%I:%M %p")
 
+#===============================================================================##
+## TODO
+##==============================================================================##
+# 1. Implement script entry root check
+# 2. Give script root ownership
+# 3. Test locally
+# 4. Move it to root owned directory (like: /etc/validateSSLCerts/validateSSLCerts.sh)
+# 5. Set up cron job (sudo crontab -e):
+# _________________________________________________________________
+# | # Start job every 1 minute                                     |
+# | *  *  *  *  *  root  /etc/validateSSLCerts/validateSSLCerts.sh |
+# | minute (0-59)                                                  |
+# |    hour (0-23)                                                 |
+# |       day (1-31)                                               |
+# |          month (1-12)                                          |
+# |             week day (0-7; 0=Sun)                              |
+# |                run as (root)                                   |
+# |                      command (path/to/script)                  |
+# |________________________________________________________________|
+# 6. Init function to create validate_cert.log and give ownership to user (chown -R 1000:1000 /path/to/log)
+# 7. Research if Synology NAS autorenews invalidated certs; if not, research how to force renew after X days before
+# 8. Implement gitlab docker restart and change gCertPath to remote dir
+# 9. Test remotely
+# 10. Update README with instructions and include Synology + Gitlab docker gist
 
 #===============================================================================##
 ## END SESSION #
@@ -123,8 +150,6 @@ function _expired_certs() {
 ##==============================================================================##
 function _validate_certs()
 {
-	# checkCertStatus=$(openssl s_client -connect od1n.mattcarlotta.io:5001 2>/dev/null | \
-	# openssl x509 -noout -checkend 0)
 	if [ ! -f "$gCertPath"/cert.pem ];
 		then
 			_abort_session "Unable to locate the cert.pem file in $gCertPath."
