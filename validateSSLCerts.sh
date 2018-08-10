@@ -46,9 +46,9 @@ gLogPath="$gCertPath"/validate_cert.log
 gCertExpireDays=7
 
 # max log file size in bytes
-#gLogMaxSize=1024 # local (1kb)
-#gLogMaxSize=10024 # local (10kb)
-gLogMaxSize=10048576 # remote (10mb)
+#gLogMaxSize=1000 # local (1kb)
+#gLogMaxSize=10000 # local (10kb)
+gLogMaxSize=10000000 # remote (10mb)
 
 # current date
 gCurrentDate=$(/bin/date +"%m/%d/%Y")
