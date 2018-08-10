@@ -48,7 +48,7 @@ gCertExpireDays=7
 # max log file size in bytes
 #gLogMaxSize=1024 # local (1kb)
 #gLogMaxSize=10024 # local (10kb)
-gLogMaxSize=1048576 # remote (10mb)
+gLogMaxSize=10048576 # remote (10mb)
 
 # current date
 gCurrentDate=$(/bin/date +"%m/%d/%Y")
