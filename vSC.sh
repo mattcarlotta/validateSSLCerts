@@ -5,7 +5,7 @@
 # Version 0.0.2b - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
-#     - validateSSLCerts is an automated bash script that attempts to validate and
+#     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
 #        update Lets Encrypt SSL Certifications for Synology NAS's running
 #        sameersbn/docker-gitlab container
 #
