@@ -73,7 +73,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   cp /volume1/docker/personal/gitlab/gitlab/data/certs/vSC.sh /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERICSTRING
   ```
 
-- Remove the .vSC.sh from your Gitlab certs folder:
+- Remove the vSC.sh from your Gitlab certs folder:
   ```
   rm vSC.sh
   ```
