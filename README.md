@@ -126,14 +126,14 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:
 0       0       26      *       *       root    /usr/syno/bin/synoschedtask --run id=2
 ```
 
-Now you'll want to add your own service, for example (the below will read as follows: "Every month, on every Monday within that month, at 1:30 in the morning, run the following command: path/to/script/vSC.sh as a root user"):
+Now you'll want to add your own job, for example (the below will read as follows: "Every month, on every Monday within that month, at 1:30 in the morning, run the following command: path/to/script/vSC.sh as a root user"):
 ```
 #minute hour    mday    month   wday    who     command
 30      1       *       *       1       root    /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERICSTRING/vSC.sh
 ```
 
 More information on how to configure a crontab can be found here:
-<a href="https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/">Simplified how to run a crontab</a>
+<a href="https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/">Simplified how to add a job a crontab</a>
 or
 <a href="https://help.ubuntu.com/community/CronHowto">Crontab Manual</a>
 
