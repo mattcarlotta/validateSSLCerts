@@ -10,7 +10,7 @@
   - [3. SSHing into your Synology NAS](#sshing-into-your-synology-nas)
   - [4. Copying the Script into your Gitlab's cert Folder](#copying-the-script-into-your-gitlabs-cert-folder)
   - [5. Testing/Running the Script](#testingrunning-the-script)
-- [Advanced Usage - Automation Through Crontab](#advanced-usage-automation-through-crontab)
+- [Advanced Usage - Automation Through Crontab](#advanced-usage---automation-through-crontab)
 - [Using Custom Flags](#using-custom-flags)
 
 
