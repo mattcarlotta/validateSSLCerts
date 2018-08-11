@@ -41,8 +41,8 @@ stopunderline=$(tput rmul)
 normal=$(tput sgr0)
 
 # path used by crontab for running localized commands
-gCommandPath="/usr/bin" # local
-# gCommandPath="/bin" # remote
+# gCommandPath="/usr/bin" # local
+gCommandPath="/bin" # remote
 
 # Gitlab container path
 gGitlabDir="/volume1/docker/personal/gitlab"
@@ -107,7 +107,7 @@ function _begin_session()
 
 
 #===============================================================================##
-## PRINT MESSAGE -- PRINTS FOUND FLAG MESSAGES													         #
+## PRINT MESSAGE -- PRINTS ANY MESSAGES TO vCS.log											         #
 ##==============================================================================##
 function _printMessage()
 {
