@@ -256,20 +256,20 @@ function _show_help()
 	printf "      ${bold}./vCS.sh${normal} [${underline}OPTIONS${stopunderline}]\n"
 	printf "\n${bold}OPTIONS:${normal}\n"
 	printf "     Options below will overwrite their respective defaults (some may have side effects).\n\n"
-  printf "     ${bold}-exp${normal}, ${bold}-expires${normal}\n"
+	printf "     ${bold}-exp${normal}, ${bold}-expires${normal}\n"
 	printf "          check if certificate expires in specified amount of days (default: $gCertExpireDays)\n\n"
-  printf "     ${bold}-gc${normal}, ${bold}-gitcertdir${normal}\n"
+	printf "     ${bold}-gc${normal}, ${bold}-gitcertdir${normal}\n"
 	printf "          Gitlab certificate directory folder (default: $gCertDir)\n"
 	printf "          side effect: updates vCS.log directory\n\n"
-  printf "     ${bold}-gd${normal}, ${bold}-gitlabdir${normal}\n"
+	printf "     ${bold}-gd${normal}, ${bold}-gitlabdir${normal}\n"
 	printf "          Gitlab directory folder (default: $gGitlabDir)\n"
 	printf "          side effect: updates Gitlab certificate directory\n"
 	printf "          side effect: updates vCS.log directory\n\n"
-  printf "     ${bold}-led${normal}, ${bold}-letsencryptdir${normal}\n"
-	printf "          lets encrypt directory folder (default: $gLetsEncryptDir)\n\n"
-  printf "     ${bold}-ls${normal}, ${bold}-logsize${normal}\n"
+	printf "     ${bold}-led${normal}, ${bold}-letsencryptdir${normal}\n"
+	printf "          Let's Encrypt directory folder (default: $gLetsEncryptDir)\n\n"
+	printf "     ${bold}-ls${normal}, ${bold}-logsize${normal}\n"
 	printf "          maximum vCS.log file size in bytes (default: $gLogMaxSize)\n\n"
-	printf "     ${bold}-h${normal}\n"
+	printf "     ${bold}-h${normal}, ${bold}-help${normal}\n"
 	printf "          help documentation\n\n"
 	exit 0
 }
@@ -428,6 +428,7 @@ function _custom_flags()
 			done;
 	fi
 }
+
 
 #===============================================================================##
 ## CREATE LOG FILE                                                               #

@@ -125,12 +125,12 @@ OPTIONS:
           side effect: updates vCS.log directory
 
      -led, -letsencryptdir
-          lets encrypt directory folder (default: /usr/syno/etc/certificate/_archive/0rOTRe)
+          Let's Encrypt directory folder (default: /usr/syno/etc/certificate/_archive/0rOTRe)
 
      -ls, -logsize
           maximum vCS.log size in bytes (default: 10000000)
 
-      -h
+      -h, -help
           help documentation
 ```
 
