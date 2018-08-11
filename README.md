@@ -47,7 +47,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
 
 ## Moving the Script onto your Synology NAS
 
-- You will then need to SFTP/SCP the vSC.sh script from your Desktop and into your Synology's Gitlab data certs folder (same as step 10, <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-1-scping-file-to-synology-nas">option 1</a> or <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-2-sftping-file-to-synology-nas">option 2</a>)
+- You will then need to SFTP/SCP the vSC.sh script from your Desktop and into your Synology's Gitlab data certs folder (similiar to step 10: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-1-scping-file-to-synology-nas">option 1</a> or <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-2-sftping-file-to-synology-nas">option 2</a>)
 
 ## SSHing into your Synology NAS
 
