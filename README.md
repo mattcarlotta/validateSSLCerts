@@ -1,17 +1,18 @@
 # validateSSLCerts (vSC)
 
+--------------------------------------------------------------------------------------------------------------
 
 ## Quick Links
 
 - [Introduction](#introduction)
 - [Requirements](#requirements)
-- Installation and Usage
+- [Installation and Usage](#installation-and-usage)
   - [1. Downloading and Making Script Executable](#downloading-and-making-script-executable)
   - [2. Moving the Script onto your Synology NAS](#moving-the-script-onto-your-synology-nas)
   - [3. SSHing into your Synology NAS](#sshing-into-your-synology-nas)
   - [4. Copying the Script into your Gitlab's cert Folder](#copying-the-script-into-your-gitlabs-cert-folder)
   - [5. Testing/Running the Script](#testingrunning-the-script)
-- [Advanced Usage - Automation Through Crontab](#advanced-usage---automation-through-crontab)
+- [Advanced Usage - Automation Through Crontab](#advanced-usage-automation-through-crontab)
 - [Using Custom Flags](#using-custom-flags)
 
 
