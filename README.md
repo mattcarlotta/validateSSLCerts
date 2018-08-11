@@ -36,7 +36,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   The following steps should be done in order for simplicity...
 
 
-### Downloading and Making Script Executable
+### 1. Downloading and Making Script Executable
 
 - Download the latest version of vSC.sh to your Desktop by entering the following commands in a terminal window:
   ```
@@ -48,11 +48,11 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   chmod +x vSC.sh
   ```
 
-### Moving the Script onto your Synology NAS
+### 2. Moving the Script onto your Synology NAS
 
 - You will then need to SFTP/SCP the vSC.sh script from your Desktop and into your Synology's Gitlab data certs folder (similiar to step 10: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-1-scping-file-to-synology-nas">option 1</a> or <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-2-sftping-file-to-synology-nas">option 2</a>)
 
-### SSHing into your Synology NAS
+### 3. SSHing into your Synology NAS
 
 - Open a terminal and SSH into your Synology NAS (replace synology_ip_address with your <b>Synology IP</b>) as a <b>system administrator</b>:
   ```
@@ -64,7 +64,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   sudo -s
   ```
 
-### Copying the Script into your Let's Encrypt Certificate Folder
+### 4. Copying the Script into your Let's Encrypt Certificate Folder
 
 - Next, copy the script from the Gitlab certs folder to your Let's Encrypt certifications folder, for example (to find the RANDOM_ALPHANUMERICSTRING folder, follow <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#viewing-synology-generated-certifications">step 9</a> ):
   ```
@@ -79,7 +79,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   <b>Why did we have to move the script into the Gitlab certs folder if we're just going to copy it to another folder then delete it?</b>
   - Put simply, Synology DSM restricts SCP/SFTP to directories owned by you. By transferring from the Gitlab certs folder (owned by you), we can then transfer it to the Let's Encrypt certificate folder (owned by root). Alternatively, we could have changed the ownership of the Let's Encrypt folder from root to you, but that may cause unintended consequences.
 
-### Testing/Running the Script
+### 5. Testing/Running the Script
 
 - Next, cd into the Let's Encrypt certifications directory, for example:
   ```
