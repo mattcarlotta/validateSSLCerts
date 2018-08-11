@@ -31,7 +31,10 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
 - RECOMMENDED: For ease of use, I highly recommend adding <a href="https://synocommunity.com/">Synocommunity package sources</a> to your Synology's Package Center, then installing the Nano text editor on your device. Otherwise, you can use the not-so-user-friendly vi text editor.
 
 
-## Installation and Usage
+### Installation and Usage
+
+  The following steps should be done in order for simplicity...
+
 
 ## Downloading and Making Script Executable
 
