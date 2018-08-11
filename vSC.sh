@@ -19,7 +19,7 @@
 #===============================================================================##
 ## TODO                                                                          #
 ##==============================================================================##
-# 1. Add flags to overwrite global variables
+# 1. Automate a search for gLetsEncryptDir's alphanumeric folder
 # 2. Update README with instructions
 # 3. Research if Synology NAS autorenews invalidated certs; if not, research how to force renew after X days before
 
@@ -76,7 +76,7 @@ gMessageStore=()
 
 
 #===============================================================================##
-## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM 20 LINES		 #
+## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM 20 LINES     #
 ##==============================================================================##
 function _check_log_size()
 {
@@ -89,25 +89,25 @@ function _check_log_size()
 }
 
 #===============================================================================##
-## END SESSION #
+## END SESSION                                                                   #
 ##==============================================================================##
 function _end_session()
 {
-	printf "%s------------------------------------------ END OF SESSION -------------------------------------------\n\n" 									>> "$gLogPath"
+	printf "%s------------------------------------------ END OF SESSION -------------------------------------------\n\n"                  >> "$gLogPath"
 }
 
 
 #===============================================================================##
-## BEGIN SESSION -- PRINTS A SESSION TO gLogPath                		 						 #
+## BEGIN SESSION -- PRINTS A SESSION TO gLogPath                                 #
 ##==============================================================================##
 function _begin_session()
 {
-	printf "%s------------------------------------ SESSION STARTED ON $gCurrentDate ----------------------------------\n"									>> "$gLogPath"
+	printf "%s------------------------------------ SESSION STARTED ON $gCurrentDate ----------------------------------\n"                 >> "$gLogPath"
 }
 
 
 #===============================================================================##
-## PRINT MESSAGE -- PRINTS ANY MESSAGES TO vCS.log											         #
+## PRINT MESSAGE -- PRINTS ANY MESSAGES TO vCS.log                               #
 ##==============================================================================##
 function _printMessage()
 {
@@ -147,7 +147,7 @@ function _create_new_certs()
 }
 
 
-#==============================================	printf "\n"=================================##
+#===============================================================================##
 ## REMOVE OLD CERTS -- REMOVES LETS ENCRYPT CERTS FROM GITLAB FOLDER             #
 ##==============================================================================##
 function _remove_old_certs()
@@ -230,7 +230,7 @@ function _validate_certs()
 
 
 #===============================================================================##
-## CHECK PATHS -- CHECKS THAT gLetsEncryptDir/gCertDir(cert.pem) EXIST         #
+## CHECK PATHS -- CHECKS THAT gLetsEncryptDir/gCertDir(cert.pem) EXIST           #
 ##==============================================================================##
 function _check_paths()
 {
@@ -246,7 +246,7 @@ function _check_paths()
 }
 
 #===============================================================================##
-## SHOW HELP -- PRINTS HELP OPTIONS TO TERMINAL																	 #
+## SHOW HELP -- PRINTS HELP OPTIONS TO TERMINAL                                  #
 ##==============================================================================##
 function _show_help()
 {
@@ -276,7 +276,7 @@ function _show_help()
 
 
 #===============================================================================##
-## PRINT ERROR -- PRINTS FOUND FLAG ERRORS													         		 #
+## PRINT ERROR -- PRINTS FOUND FLAG ERRORS                                       #
 ##==============================================================================##
 function _printError()
 {
@@ -295,7 +295,7 @@ function _printError()
 }
 
 #===============================================================================##
-## INVALID ARGUMENT -- PRINTS ANY INVALID CUSTOM FLAGS      										 #
+## INVALID ARGUMENT -- PRINTS ANY INVALID CUSTOM FLAGS                           #
 ##==============================================================================##
 function _invalidArgument()
 {
@@ -303,7 +303,7 @@ function _invalidArgument()
 }
 
 #===============================================================================##
-## MESSAGE STORE -- PRINTS ANY CUSTOM FLAGS MESSAGES TO vSC.log									 #
+## MESSAGE STORE -- PRINTS ANY CUSTOM FLAGS MESSAGES TO vSC.log                  #
 ##==============================================================================##
 function _message_store()
 {
@@ -318,7 +318,7 @@ function _message_store()
 
 
 #===============================================================================##
-## CUSTOM FLAGS -- OVERRIDES GLOBAL VARIABLES               										 #
+## CUSTOM FLAGS -- OVERRIDES GLOBAL VARIABLES                                    #
 ##==============================================================================##
 function _custom_flags()
 {
