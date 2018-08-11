@@ -8,7 +8,7 @@
   - [1. Downloading and Making Script Executable](#downloading-and-making-script-executable)
   - [2. Moving the Script onto your Synology NAS](#moving-the-script-onto-your-synology-nas)
   - [3. SSHing into your Synology NAS](#sshing-into-your-synology-nas)
-  - [4. Copying the Script into your Gitlab's cert Folder](#copying-the-script-into-your-gitlabs-cert-folder)
+  - [4. Copying the Script into your Let's Encrypt Certificate Folder](#copying-the-script-into-your-lets-encrypt-certificate-folder)
   - [5. Testing/Running the Script](#testingrunning-the-script)
 - [Advanced Usage - Automation Through Crontab](#advanced-usage---automation-through-crontab)
 - [Using Custom Flags](#using-custom-flags)
@@ -61,7 +61,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   sudo -s
   ```
 
-## Copying the Script into your Gitlab's cert Folder
+## Copying the Script into your Let's Encrypt Certificate Folder
 
 - Next, copy the script from the Gitlab certs folder to your Let's Encrypt certifications folder, for example (to find the RANDOM_ALPHANUMERICSTRING folder, follow <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#viewing-synology-generated-certifications">step 9</a> ):
   ```
