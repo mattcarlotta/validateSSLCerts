@@ -112,7 +112,7 @@ function _begin_session()
 function _printMessage()
 {
 	local message=$1
-	printf "$gCurrentTime -- $message \n" 																																																>> "$gLogPath"
+	printf "$gCurrentTime -- $message \n"                                                                                                 >> "$gLogPath"
 }
 
 
