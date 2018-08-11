@@ -133,7 +133,7 @@ Now you'll want to add your own service, for example (the below will read as fol
 ```
 
 More information on how to configure a crontab can be found here:
-<a href="https://www.cyberciti.biz/faq/how-to-run-cron-job-every-minute-on-linuxunix/">Simplified how to run a crontab</a>
+<a href="https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/">Simplified how to run a crontab</a>
 or
 <a href="https://help.ubuntu.com/community/CronHowto">Crontab Manual</a>
 
