@@ -1,4 +1,4 @@
-# validateSSLCerts (vSC)
+# validateSSLCerts (vSC.sh)
 
 ## Quick Links
 
@@ -73,7 +73,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   rm vSC.sh
   ```
 
-  Why did we have to move the script into the Gitlab certs folder if we're just going to copy it another folder then delete it?
+  <b>Why did we have to move the script into the Gitlab certs folder if we're just going to copy it to another folder then delete it?</b>
   - Put simply, Synology DSM restricts SCP/SFTP to directories owned by you. By transferring from the Gitlab certs folder (owned by you), we can then transfer it to the Let's Encrypt certificate folder (owned by root). Alternatively, we could have changed the ownership of the Let's Encrypt folder from root to you, but that may cause unintended consequences.
 
 ## Testing/Running the Script
@@ -87,7 +87,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   ```
   ./vSC.sh
   ```
-  See [Using Custom Flags](#using-custom-flags) for advanced configurations
+  See [Using Custom Flags](#using-custom-flags) for advanced configurations.
 
 
 - To test if the script worked, cd back into to your gitlab certs folder and check if a `vSC.log` file exists:
@@ -96,12 +96,12 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   ls
   ```
 
-  You should see:
+- You should see:
   ```
   cert.cem gitlab.crt gitlab.key vSC.log
   ```
 
-  You can view the contents of the file by running:
+- You can view the contents of the log by running:
   ```
   nano vSC.log
   ```
@@ -184,5 +184,5 @@ OPTIONS:
 ```
 
 ⚠️ NOTES:
-- As noted above, using some flags will update other global variables since some of them rely on each other!
+- As noted above, using some flags will update other global variables since some of them rely on each other.
 - If you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name.
