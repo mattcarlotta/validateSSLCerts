@@ -72,20 +72,6 @@ gSession=false
 
 
 #===============================================================================##
-## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM 20 LINES     #
-##==============================================================================##
-function _check_log_size()
-{
-	local logSize=$($gCommandPath/stat -c%s "$gLogPath")
-
-	if ((logSize > gLogMaxSize));
-		then
-			sed -i '1,18d' $gLogPath
-	fi
-}
-
-
-#===============================================================================##
 ## END SESSION                                                                   #
 ##==============================================================================##
 function _end_session()
@@ -117,6 +103,19 @@ function _session_active()
 
 
 #===============================================================================##
+## CREATE LOG FILE                                                               #
+##==============================================================================##
+function _create_log_file()
+{
+	if [ ! -f "$gLogPath" ];
+		then
+			touch "$gLogPath"
+			chown -R 1000:1000 "$gLogPath"
+	fi
+}
+
+
+#===============================================================================##
 ## PRINT MESSAGE -- PRINTS ANY MESSAGES TO vSC.log                               #
 ##==============================================================================##
 function _printMessage()
@@ -127,21 +126,15 @@ function _printMessage()
 
 
 #===============================================================================##
-## FIND LE CERT FOLDER -- LOCATES LETS ENCRYPT FOLDER IF NOT SUPPLIED            #
+## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM 20 LINES     #
 ##==============================================================================##
-function _find_le_cert_folder()
+function _check_log_size()
 {
-	if [ $gLEFolder = "DEFAULT" ];
-		then
-			cd "$gLECertDir"
-			local folder=$(/bin/ls | sed -e 's/\(INFO\)*$//g; s/\(DEFAULT\)*$//g;')
+	local logSize=$($gCommandPath/stat -c%s "$gLogPath")
 
-			if [ $folder ];
-				then
-					gLEFolder="$folder"
-				else
-					abort_session "Unable to locate a Let's Encrypt folder"
-			fi
+	if ((logSize > gLogMaxSize));
+		then
+			sed -i '1,18d' $gLogPath
 	fi
 }
 
@@ -163,39 +156,20 @@ function _abort_session()
 
 
 #===============================================================================##
-## GET 10TH LINE  --  GRABS 10TH LINE OF LE AND GITLAB CERT                      #
+## RESTART GITLAB CONTAINER -- RESTARTS GITLAB CONTAINER TO USE NEW CERTS        #
 ##==============================================================================##
-function get_10th_line()
+function _restart_gitlab_container()
 {
-	cat $1 | tail +10 | head -n1
-}
+	_printMessage "Restarting gitlab to use the new certifications."
 
-
-#===============================================================================##
-## COMPARE CERTS  --  CHECKS IF LE CERT HAS BEEN UPDATED                         #
-##==============================================================================##
-function _compare_certs()
-{
-	local LECert=$(get_10th_line $gLECertDir/$gLEFolder/cert.pem)
-	local GitCert=$(get_10th_line $gGitlabCertDir/cert.pem)
-
-	if [ "$LECert" =  "$GitCert" ];
+	cd "$gGitlabDir"
+	docker-compose restart gitlab > /dev/null 2>&1
+	if [[ $? -ne 0 ]];
 		then
-			_printMessage "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
-			_abort_session "You need to manually renew them before attempting to run this script again."
+			_abort_session "Uh oh. Gitlab has failed to restart! Check your docker logs to find out why."
 	fi
-}
 
-#===============================================================================##
-## UPDATE CERTS  --  ATTEMPTS TO UPDATE LETS ENCRYPT CERTIFICATES                #
-##==============================================================================##
-function _update_certs()
-{
-	# TODO
-	# This step may not be neccessary...
-	# The Synology NAS may autorenew invalidated certs
-	# If not, need to research how to attempt to renew before gCertExpireDays days
-	printf ""
+	_printMessage "Everything looks good. You should be up and running in about 5 minutes."
 }
 
 
@@ -237,20 +211,50 @@ function _remove_old_certs()
 
 
 #===============================================================================##
-## RESTART GITLAB CONTAINER -- RESTARTS GITLAB CONTAINER TO USE NEW CERTS        #
+## GET 10TH LINE  --  GRABS 10TH LINE OF LE AND GITLAB CERT                      #
 ##==============================================================================##
-function _restart_gitlab_container()
+function get_10th_line()
 {
-	_printMessage "Restarting gitlab to use the new certifications."
+	cat $1 | tail +10 | head -n1
+}
 
-	cd "$gGitlabDir"
-	docker-compose restart gitlab > /dev/null 2>&1
-	if [[ $? -ne 0 ]];
+
+#===============================================================================##
+## COMPARE CERTS  --  CHECKS IF LE CERT HAS BEEN UPDATED                         #
+##==============================================================================##
+function _compare_certs()
+{
+	local LECert=$(get_10th_line $gLECertDir/$gLEFolder/cert.pem)
+	local GitCert=$(get_10th_line $gGitlabCertDir/cert.pem)
+
+	if [ "$LECert" =  "$GitCert" ];
 		then
-			_abort_session "Uh oh. Gitlab has failed to restart! Check your docker logs to find out why."
+			_printMessage "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
+			_abort_session "You need to manually renew them before attempting to run this script again."
 	fi
+}
 
-	_printMessage "Everything looks good. You should be up and running in about 5 minutes."
+
+#===============================================================================##
+## UPDATE CERTS  --  ATTEMPTS TO UPDATE LETS ENCRYPT CERTIFICATES                #
+##==============================================================================##
+function _update_certs()
+{
+	# TODO
+	# This step may not be neccessary...
+	# The Synology NAS may autorenew invalidated certs
+	# If not, need to research how to attempt to renew before gCertExpireDays days
+	printf ""
+}
+
+
+#===============================================================================##
+## EXPIRED CERTIFICATES -- PRINTS EXPIRED CERTS MESSAGE TO gLogPath              #
+##==============================================================================##
+function _expired_certs()
+{
+	_printMessage "Looks like your certifications will expire within $gCertExpireDays day(s)."
+	_printMessage "Attempting to update your certifications."
 }
 
 
@@ -262,16 +266,6 @@ function _show_valid_dates()
 	local validStart=$($gCommandPath/openssl x509 -startdate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
 	local validEnd=$($gCommandPath/openssl x509 -enddate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
 	_printMessage "You are valid from $validStart through $validEnd."
-}
-
-
-#===============================================================================##
-## EXPIRED CERTIFICATES -- PRINTS EXPIRED CERTS MESSAGE TO gLogPath              #
-##==============================================================================##
-function _expired_certs()
-{
-	_printMessage "Looks like your certifications will expire within $gCertExpireDays day(s)."
-	_printMessage "Attempting to update your certifications."
 }
 
 
@@ -389,6 +383,26 @@ function _message_store()
 				do
 					_printMessage "$messages"
 			done
+	fi
+}
+
+
+#===============================================================================##
+## FIND LE CERT FOLDER -- LOCATES LETS ENCRYPT FOLDER IF NOT SUPPLIED            #
+##==============================================================================##
+function _find_le_cert_folder()
+{
+	if [ $gLEFolder = "DEFAULT" ];
+		then
+			cd "$gLECertDir"
+			local folder=$(/bin/ls | sed -e 's/\(INFO\)*$//g; s/\(DEFAULT\)*$//g;')
+
+			if [ $folder ];
+				then
+					gLEFolder="$folder"
+				else
+					abort_session "Unable to locate a Let's Encrypt folder"
+			fi
 	fi
 }
 
@@ -513,19 +527,6 @@ function _custom_flags()
 				fi
 				shift;
 			done;
-	fi
-}
-
-
-#===============================================================================##
-## CREATE LOG FILE                                                               #
-##==============================================================================##
-function _create_log_file()
-{
-	if [ ! -f "$gLogPath" ];
-		then
-			touch "$gLogPath"
-			chown -R 1000:1000 "$gLogPath"
 	fi
 }
 
