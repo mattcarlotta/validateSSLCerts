@@ -553,7 +553,6 @@ function main()
 ##==============================================================================##
 if [[ `id -u` -ne 0 ]];
 	then
-		clear
 		_create_log_file
 		_session_active
 		_abort_session "This script must be run as the ROOT USER! Make sure the script has the correct root permissions.\n"
