@@ -18,7 +18,7 @@ validateSSLCerts (vSC.sh) is an automated bash script that attempts to validate 
 
 ## Introduction
 
-The idea behid this script is to seamlessly automate the process for updating the shared certificate across services with minimal downtime.
+The idea behind this script is to seamlessly automate the process for updating the shared certificate across services with minimal downtime.
 
 Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab container before using this script: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6">Let's Encrypt - Synology NAS + sameersbn/docker-gitlab</a>
 
