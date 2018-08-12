@@ -1,6 +1,6 @@
 # validateSSLCerts (vSC.sh)
 
-validateSSLCerts (vSC.sh) is an automated bash script that attempts to validate and update a Lets Encrypt SSL certification generated from a Synology NAS (Let's Encrypt Authority X3 certificate).The Let's Encrypt certificate is not only being used by the Synology NAS, but is also being shared with a <a href="https://github.com/sameersbn/docker-gitlab">sameersbn/docker-gitlab</a> container.
+validateSSLCerts (vSC.sh) is an automated bash script that attempts to validate and update a Lets Encrypt SSL certification generated from a Synology NAS (Let's Encrypt Authority X3 certificate). The Let's Encrypt certificate is not only being used by the Synology NAS, but is also being shared with a <a href="https://github.com/sameersbn/docker-gitlab">sameersbn/docker-gitlab</a> container.
 
 ## Quick Links
 
