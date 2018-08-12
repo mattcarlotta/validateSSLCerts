@@ -164,7 +164,7 @@ OPTIONS:
      Options below will overwrite their respective defaults (some may have side effects).
 
      -exp, -expires
-          check if certificate expires in specified amount of days (default: 7)
+          check if certificate expires in specified amount of days; min: 1, max: 30 (default: 7)
 
      -gc, -gitcertdir
           Gitlab certificate directory folder (default: /volume1/docker/personal/gitlab/gitlab/data/certs)
@@ -182,7 +182,7 @@ OPTIONS:
           Let's Encrypt certificate folder (default: automatically calculated via Let's Encrypt directory)
 
      -ls, -logsize
-          maximum vSC.log file size in bytes (default: 10000000)
+          maximum log file size in bytes (default: 10000000)
 
      -h, -help
           help documentation

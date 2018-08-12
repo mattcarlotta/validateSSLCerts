@@ -2,7 +2,7 @@
 #
 # Script to validate Lets Encrypt SSL Certifications for Synology NAS's
 #
-# Version 0.0.4b - Copyright (c) 2018 by Matt Carlotta
+# Version 0.0.5b - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
 #     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
@@ -16,19 +16,12 @@
 #        script. Thank you!
 #
 
-#===============================================================================##
-## TODO                                                                          #
-##==============================================================================##
-# 1. Automate a search for gLetsEncryptDir's alphanumeric folder
-# 2. Update README with instructions
-# 3. Research if Synology NAS autorenews invalidated certs; if not, research how to force renew after X days before
-
 
 #===============================================================================##
 ## GLOBAL VARIABLES                                                              #
 ##==============================================================================##
 # current script version
-version="0.0.4b"
+version="0.0.5b"
 
 # bold text
 bold=$(tput bold)
@@ -170,6 +163,43 @@ function _abort_session()
 
 
 #===============================================================================##
+## GET 10TH LINE  --  GRABS 10TH LINE OF LE AND GITLAB CERT                      #
+##==============================================================================##
+function get_10th_line()
+{
+	cat $1 | tail +10 | head -n1
+}
+
+
+#===============================================================================##
+## COMPARE CERTS  --  CHECKS IF LE CERT HAS BEEN UPDATED                         #
+##==============================================================================##
+function _compare_certs()
+{
+	local LECert=$(get_10th_line $gLECertDir/$gLEFolder/cert.pem)
+	local GitCert=$(get_10th_line $gGitlabCertDir/cert.pem)
+
+  if [ "$LECert" =  "$GitCert" ];
+    then
+		 	_printMessage "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
+			_abort_session "You need to manually renew them before attempting to run this script again."
+  fi
+}
+
+#===============================================================================##
+## UPDATE CERTS  --  ATTEMPTS TO UPDATE LETS ENCRYPT CERTIFICATES                #
+##==============================================================================##
+function _update_certs()
+{
+	# TODO
+	# This step may not be neccessary...
+	# The Synology NAS may autorenew invalidated certs
+	# If not, need to research how to attempt to renew before gCertExpireDays days
+	printf ""
+}
+
+
+#===============================================================================##
 ## CREATE NEW CERTS -- CREATES NEW LETS ENCRYPT CERTIFICATIONS FOR GITLAB        #
 ##==============================================================================##
 function _create_new_certs()
@@ -191,7 +221,7 @@ function _create_new_certs()
 ##==============================================================================##
 function _remove_old_certs()
 {
-	if [ ! -f "$gGitlabCertDir"/cert.pem ] || [ ! -f "$gGitlabCertDir"/gitlab.key ] || [ ! -f "$gGitlabCertDir"/gitlab.key ];
+	if [[ ! -f "$gGitlabCertDir"/cert.pem || ! -f "$gGitlabCertDir"/gitlab.key || ! -f "$gGitlabCertDir"/gitlab.key ]];
 		then
 			_abort_session "Unable to locate your current certifications in $gGitlabCertDir."
 	fi
@@ -229,8 +259,8 @@ function _restart_gitlab_container()
 ##==============================================================================##
 function _show_valid_dates()
 {
-	validStart=$($gCommandPath/openssl x509 -startdate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
-	validEnd=$($gCommandPath/openssl x509 -enddate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
+	local validStart=$($gCommandPath/openssl x509 -startdate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
+	local validEnd=$($gCommandPath/openssl x509 -enddate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
 	_printMessage "You are valid from $validStart through $validEnd."
 }
 
@@ -240,8 +270,8 @@ function _show_valid_dates()
 ##==============================================================================##
 function _expired_certs()
 {
-	_printMessage "Looks like your certifications have expired!"
-	_printMessage "Attempting to update your Let's Encrypt certifications."
+	_printMessage "Looks like your certifications will expire within $gCertExpireDays day(s)."
+	_printMessage "Attempting to update your certifications."
 }
 
 
@@ -257,10 +287,12 @@ function _validate_certs()
 	if [[ $checkCertStatus == "Certificate will not expire" ]];
 		then
 			_show_valid_dates
-			_printMessage "No need to renew your certifications!"
+			_printMessage "No need to update yet! Your certificates will not expire within $gCertExpireDays day(s)."
 	else
 		_show_valid_dates
 		_expired_certs
+		_update_certs
+		_compare_certs
 		_remove_old_certs
 		_create_new_certs
 		_restart_gitlab_container
@@ -269,16 +301,16 @@ function _validate_certs()
 
 
 #===============================================================================##
-## CHECK PATHS -- CHECKS THAT gLECertDir/gLEFolder & /gGitlabCertDir/cert.pem EXIST    #
+## CHECK PATHS -- gLECertDir/gLEFolder & /gGitlabCertDir/cert.pem EXIST          #
 ##==============================================================================##
 function _check_paths()
 {
-	if [ ! -d "$gLECertDir" ] || [ ! -d "$gLECertDir"/"$gLEFolder" ];
+	if [[ ! -d "$gLECertDir" || ! -d "$gLECertDir"/"$gLEFolder" ]];
 		then
 		_abort_session "Unable to locate the Let's Encrypt directory or folder path."
 	fi
 
-	if [ ! -d "$gGitlabCertDir" ] || [ ! -f "$gGitlabCertDir"/cert.pem ];
+	if [[ ! -d "$gGitlabCertDir" || ! -f "$gGitlabCertDir"/cert.pem ]];
 		then
 		_abort_session "Unable to locate the cert.pem file in $gGitlabCertDir."
 	fi
@@ -297,7 +329,7 @@ function _show_help()
 	printf "\n${bold}OPTIONS:${normal}\n"
 	printf "     Options below will overwrite their respective defaults (some may have side effects).\n\n"
 	printf "     ${bold}-exp${normal}, ${bold}-expires${normal}\n"
-	printf "          check if certificate expires in specified amount of days (default: $gCertExpireDays)\n\n"
+	printf "          check if certificate expires in specified amount of days; min: 1, max: 30 (default: $gCertExpireDays)\n\n"
 	printf "     ${bold}-gc${normal}, ${bold}-gitcertdir${normal}\n"
 	printf "          Gitlab certificate directory folder (default: $gGitlabCertDir)\n"
 	printf "          side effect: updates vSC.log directory\n\n"
@@ -310,7 +342,7 @@ function _show_help()
 	printf "     ${bold}-lef${normal}, ${bold}-letsencryptfolder${normal}\n"
 	printf "          Let's Encrypt certificate folder (default: automatically calculated via Let's Encrypt directory)\n\n"
 	printf "     ${bold}-ls${normal}, ${bold}-logsize${normal}\n"
-	printf "          maximum vSC.log file size in bytes (default: $gLogMaxSize)\n\n"
+	printf "          maximum log file size in bytes (default: $gLogMaxSize)\n\n"
 	printf "     ${bold}-h${normal}, ${bold}-help${normal}\n"
 	printf "          help documentation\n\n"
 	exit 0
@@ -324,15 +356,15 @@ function _printError()
 {
 	case "$1" in
 		2) _abort_session "The supplied Gitlab certification path: $2 does not exist."
-				;;
+		;;
 		3) _abort_session "The supplied Gitlab directory: $2 does not exist."
-				;;
+		;;
 		4) _abort_session "The supplied Let's Encrypt directory: $2 does not exist."
-				;;
+		;;
 		5) _abort_session "The log file size must be larger than 1kb and less than 100mb."
-				;;
-		*) _abort_session "The expires in must be greater than 0 and less than 90 days."
-				;;
+		;;
+		*) _abort_session "The expires in must be greater than 0 and less than 30 days."
+		;;
 	esac
 }
 
@@ -375,108 +407,109 @@ function _custom_flags()
 				_show_help
 			fi
 
-			while [ "$1" ];do
-				local flag=$(echo "$1" | tr '[:upper:]' '[:lower:]')
-				if [[ "${flag}" =~ ^[-abcdefghiklmnoprsutvwx]+$ ]];
-					then
-						case "${flag}" in
+			while [ "$1" ];
+				do
+					local flag=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+					if [[ "${flag}" =~ ^[-abcdefghiklmnoprsutvwx]+$ ]];
+						then
+							case "${flag}" in
 
-							-exp|-expires) shift
-								if [[ "$1" =~ ^[0-9]+$ ]];
-									then
-										if [ $1 -lt 0 ] || [ $1 -ge 90 ];
-											then
-												_printError 1 $1
-											else
-												gCertExpireDays=$1
-												gMessageStore+=("Overriden the certification expires in to: ${gCertExpireDays} days")
-										fi
-									else
+								-exp|-expires) shift
+									if [[ "$1" =~ ^[0-9]+$ ]];
+										then
+											if [[ $1 -lt 1  ||  $1 -gt 30 ]];
+												then
+													_printError 1 $1
+												else
+													gCertExpireDays=$1
+													gMessageStore+=("Overriden the certification expires in to: ${gCertExpireDays} day(s).")
+											fi
+										else
 										_invalidArgument "-e|-expires $1"
-								fi
+									fi
 								;;
 
-							-gc|-gitcertdir) shift
-								if [[ "$1" =~ ^(.+)/([^/]+)$ ]];
-									then
-										if [ ! -d "$1" ];
-											then
-												_printError 2 $1
-											else
-												gGitlabCertDir=$1
-												gLogPath="$gGitlabCertDir"/vSC.log
-												gMessageStore+=("Overriden the Gitlab certification path to: ${gGitlabCertDir}")
-												gMessageStore+=("Overriden the vSC.log path: ${gLogPath}")
-										fi
-									else
-										_invalidArgument "-gc|-gitcertdir $1"
-								fi
+								-gc|-gitcertdir) shift
+									if [[ "$1" =~ ^(.+)/([^/]+)$ ]];
+										then
+											if [ ! -d "$1" ];
+												then
+													_printError 2 $1
+												else
+													gGitlabCertDir=$1
+													gLogPath="$gGitlabCertDir"/vSC.log
+													gMessageStore+=("Overriden the Gitlab certification path to: ${gGitlabCertDir}.")
+													gMessageStore+=("Overriden the vSC.log path: ${gLogPath}.")
+											fi
+										else
+											_invalidArgument "-gc|-gitcertdir $1"
+									fi
 								;;
 
-							-gd|-gitlabdir) shift
-								if [[ "$1" =~ ^(.+)/([^/]+)$ ]];
-									then
-										if [ ! -d "$1" ];
-											then
-												_printError 3 $1
-											else
-												gGitlabDir=$1
-												gGitlabCertDir="$gGitlabDir"
-												gLogPath="$gGitlabCertDir"/vSC.log
-												gMessageStore+=("Overriden the Gitlab directory path to: ${gGitlabDir}")
-												gMessageStore+=("Overriden the Gitlab certification path to: ${gGitlabCertDir}")
-												gMessageStore+=("Overriden the vSC.log path: ${gLogPath}")
-										fi
-									else
-										_invalidArgument "-gd|-gitlabdir $1"
-								fi
+								-gd|-gitlabdir) shift
+									if [[ "$1" =~ ^(.+)/([^/]+)$ ]];
+										then
+											if [ ! -d "$1" ];
+												then
+													_printError 3 $1
+												else
+													gGitlabDir=$1
+													gGitlabCertDir="$gGitlabDir"
+													gLogPath="$gGitlabCertDir"/vSC.log
+													gMessageStore+=("Overriden the Gitlab directory path to: ${gGitlabDir}.")
+													gMessageStore+=("Overriden the Gitlab certification path to: ${gGitlabCertDir}.")
+													gMessageStore+=("Overriden the vSC.log path: ${gLogPath}.")
+											fi
+										else
+											_invalidArgument "-gd|-gitlabdir $1"
+									fi
 								;;
 
-							-led|-letsencryptdir) shift
-								if [[ "$1" =~ ^(.+)/([^/]+)$ ]];
-									then
-										if [ ! -d "$1" ];
-											then
-												_printError 4 $1
-											else
-												gLECertDir=$1
-												gMessageStore+=("Overriden the Let's Encrypt directory path to: ${gLECertDir}")
-										fi
-									else
-										_invalidArgument "-led|-letsencryptdir $1"
-								fi
+								-led|-letsencryptdir) shift
+									if [[ "$1" =~ ^(.+)/([^/]+)$ ]];
+										then
+											if [ ! -d "$1" ];
+												then
+													_printError 4 $1
+												else
+													gLECertDir=$1
+													gMessageStore+=("Overriden the Let's Encrypt directory path to: ${gLECertDir}.")
+											fi
+										else
+											_invalidArgument "-led|-letsencryptdir $1"
+									fi
 								;;
 
-							-lef|-letsencryptfolder) shift
-								if [[ "$1" =~ ^[A-Za-z0-9_.]+$ ]];
-									then
-										gLEFolder=$1
-										gMessageStore+=("Overriden the Let's Encrypt folder name to: ${gLEFolder}")
-									else
-										_invalidArgument "-lef|-letsencryptfolder $1"
-								fi
+								-lef|-letsencryptfolder) shift
+									if [[ "$1" =~ ^[A-Za-z0-9_.]+$ ]];
+										then
+											gLEFolder=$1
+											gMessageStore+=("Overriden the Let's Encrypt folder name to: ${gLEFolder}.")
+										else
+											_invalidArgument "-lef|-letsencryptfolder $1"
+									fi
 								;;
 
-							-ls|-logsize) shift
-								if [[ "$1" =~ ^[0-9]+$ ]];
-									then
-										if [ $1 -lt 2000 ] || [ $1 -gt 100000000 ];
-											then
-													_printError 5 $1
-											else
-												gLogMaxSize=$1
-												gMessageStore+=("Overriden the max vSC.log file size to: ${gLogMaxSize}")
-										fi
-									else
-										_invalidArgument "-ls|-logsize $1"
-								fi
+								-ls|-logsize) shift
+									if [[ "$1" =~ ^[0-9]+$ ]];
+										then
+											if [[ $1 -lt 2000 || $1 -gt 100000000 ]];
+												then
+														_printError 5 $1
+												else
+													gLogMaxSize=$1
+													gMessageStore+=("Overriden the max log file size to: ${gLogMaxSize} bytes.")
+											fi
+										else
+											_invalidArgument "-ls|-logsize $1"
+									fi
 								;;
 
-							*) _invalidArgument "$1"
+								*) _invalidArgument "$1"
 								;;
-							esac
-						else
-							_invalidArgument "$1"
+						esac
+					else
+						_invalidArgument "$1"
 				fi
 				shift;
 			done;
