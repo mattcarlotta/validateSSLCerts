@@ -553,7 +553,7 @@ function main()
 ##==============================================================================##
 if [[ `id -u` -ne 0 ]];
 	then
-		_abort_session "This script must be run as the ROOT USER! Make sure the script has the correct root permissions.\n"
+		_abort_session "This script must be run as the ROOT user! Make sure the script has the correct ROOT permissions.\n"
 	else
 		main "$@"
 fi
