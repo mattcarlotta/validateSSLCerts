@@ -137,11 +137,11 @@ function _find_le_cert_folder()
 			local folder=$(/bin/ls | sed -e 's/\(INFO\)*$//g; s/\(DEFAULT\)*$//g;')
 
 			if [ $folder ];
-		    then
-		      gLEFolder="$folder"
-		    else
-		      abort_session "Unable to locate a Let's Encrypt folder"
-		  fi
+				then
+					gLEFolder="$folder"
+				else
+					abort_session "Unable to locate a Let's Encrypt folder"
+			fi
 	fi
 }
 
@@ -179,11 +179,11 @@ function _compare_certs()
 	local LECert=$(get_10th_line $gLECertDir/$gLEFolder/cert.pem)
 	local GitCert=$(get_10th_line $gGitlabCertDir/cert.pem)
 
-  if [ "$LECert" =  "$GitCert" ];
-    then
-		 	_printMessage "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
+	if [ "$LECert" =  "$GitCert" ];
+		then
+			_printMessage "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
 			_abort_session "You need to manually renew them before attempting to run this script again."
-  fi
+	fi
 }
 
 #===============================================================================##
