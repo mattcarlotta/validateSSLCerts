@@ -154,7 +154,7 @@ or
 
 In order to keep this script as flexible as possible, you can override default options with a flag, for example:
 ```
-./vSC.sh -ls 2000 -gd /srv/docker/gitlab/ -led /etc/letsencrypt
+./vSC.sh -ls 2000 -gd /srv/docker/gitlab -led /etc/letsencrypt
 ```
 
 You can view all of the custom flag options by running this command:
