@@ -110,7 +110,7 @@ The idea behind this script is to seamlessly automate the process for updating t
   nano vSC.log
   ```
 
-  Ideally, you'll want to see something like this:
+- Ideally, you'll want to see something like this:
   ```
   ------------------------------------ SESSION STARTED ON 08/12/2018 ----------------------------------
   07:57 PM -- Attempting to validate your current Let's Encrypt certificates.
