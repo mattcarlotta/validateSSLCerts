@@ -28,7 +28,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 - A Synology device that can generate a Let's Encrypt certificate
 - A Synology user with system administrator access (ex: admin)
 - A Gitlab certs folder (for example: /volume1/docker/personal/gitlab/gitlab/data/<b>certs</b>)
-- Inside the Gitlab certs folder, there needs to be 4 files: `gitlab.key`, `gitlab.crt`, `dhparam.pem`, and a `cert.pem` (see: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#copying-certifications-to-gitlab-certs-folder">step 10</a>)
+- Inside the Gitlab certs folder, there needs to be 4 files: `gitlab.key`, `gitlab.crt`, `dhparam.pem`, and a `cert.pem` (see: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#viewing-synology-generated-certifications">step 9, then step 10</a>)
 - RECOMMENDED: For ease of use, I highly recommend adding <a href="https://synocommunity.com/">Synocommunity package sources</a> to your Synology's Package Center, then installing the Nano text editor on your device. Otherwise, you can use the not-so-user-friendly vi text editor.
 
 
@@ -51,7 +51,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 ### 2. Moving the Script onto your Synology NAS
 
-- You will then need to SFTP/SCP the vSC.sh script from your Desktop and into your Synology's Gitlab data certs folder (similiar to step 10: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-1-scping-file-to-synology-nas">option 1</a> or <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-2-sftping-file-to-synology-nas">option 2</a>)
+- You will then need to SFTP/SCP the vSC.sh script from your Desktop and into your Synology's Gitlab data certs folder (similar to step 10: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-1-scping-file-to-synology-nas">option 1</a> or <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#option-2-sftping-file-to-synology-nas">option 2</a>)
 
 ### 3. SSHing into your Synology NAS
 
@@ -82,7 +82,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 ### 5. Testing/Running the Script
 
-- Next, cd into the Let's Encrypt certifications directory, for example:
+- Next, `cd` into the Let's Encrypt certifications directory, for example:
   ```
   cd /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERIC_STRING
   ```
@@ -94,7 +94,7 @@ The idea behind this script is to seamlessly automate the process for updating t
   See [Advanced Usage: Custom Flags](#advanced-usage-custom-flags) for custom configurations.
 
 
-- To test if the script worked, cd back into to your gitlab certs folder and check if a `vSC.log` file exists:
+- To test if the script worked, `cd` back into to your gitlab certs folder and check if a `vSC.log` file exists:
   ```
   cd /volume1/docker/personal/gitlab/gitlab/data/certs
   ls
@@ -154,7 +154,7 @@ or
 
 In order to keep this script as flexible as possible, you can override default options with a flag, for example:
 ```
-./vSC.sh -ls 2000 -gd /srv/docker/gitlab/ -led /etc/letsencrypt -lef b5TxhGe
+./vSC.sh -ls 2000 -gd /srv/docker/gitlab/ -led /etc/letsencrypt
 ```
 
 You can view all of the custom flag options by running this command:
@@ -196,5 +196,5 @@ OPTIONS:
 ```
 
 ⚠️ NOTES:
-- As noted above, using some flags will update other global variables since some of them rely on each other.
+- As noted above, using some flags will update other global variables since some of them rely upon each other.
 - The random alphanumeric Let's Encrypt certificate folder will be automatically found by the script (as long as the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe`).
