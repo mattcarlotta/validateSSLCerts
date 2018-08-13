@@ -366,7 +366,7 @@ function _printError()
 #===============================================================================##
 ## INVALID ARGUMENT -- PRINTS ANY INVALID CUSTOM FLAGS                           #
 ##==============================================================================##
-function _invalidArgument()
+function _invalid_argument()
 {
 	_abort_session "Invalid argument detected: ${1} (check vSC.sh -h)"
 }
@@ -439,7 +439,7 @@ function _custom_flags()
 													gMessageStore+=("Overriden the certification expires in to: ${gCertExpireDays} day(s).")
 											fi
 										else
-										_invalidArgument "-e|-expires $1"
+										_invalid_argument "-e|-expires $1"
 									fi
 								;;
 
@@ -456,7 +456,7 @@ function _custom_flags()
 													gMessageStore+=("Overriden the vSC.log path: ${gLogPath}.")
 											fi
 										else
-											_invalidArgument "-gc|-gitcertdir $1"
+											_invalid_argument "-gc|-gitcertdir $1"
 									fi
 								;;
 
@@ -475,7 +475,7 @@ function _custom_flags()
 													gMessageStore+=("Overriden the vSC.log path: ${gLogPath}.")
 											fi
 										else
-											_invalidArgument "-gd|-gitlabdir $1"
+											_invalid_argument "-gd|-gitlabdir $1"
 									fi
 								;;
 
@@ -490,7 +490,7 @@ function _custom_flags()
 													gMessageStore+=("Overriden the Let's Encrypt directory path to: ${gLECertDir}.")
 											fi
 										else
-											_invalidArgument "-led|-letsencryptdir $1"
+											_invalid_argument "-led|-letsencryptdir $1"
 									fi
 								;;
 
@@ -500,7 +500,7 @@ function _custom_flags()
 											gLEFolder=$1
 											gMessageStore+=("Overriden the Let's Encrypt folder name to: ${gLEFolder}.")
 										else
-											_invalidArgument "-lef|-letsencryptfolder $1"
+											_invalid_argument "-lef|-letsencryptfolder $1"
 									fi
 								;;
 
@@ -515,15 +515,15 @@ function _custom_flags()
 													gMessageStore+=("Overriden the max log file size to: ${gLogMaxSize} bytes.")
 											fi
 										else
-											_invalidArgument "-ls|-logsize $1"
+											_invalid_argument "-ls|-logsize $1"
 									fi
 								;;
 
-								*) _invalidArgument "$1"
+								*) _invalid_argument "$1"
 								;;
 						esac
 					else
-						_invalidArgument "$1"
+						_invalid_argument "$1"
 				fi
 				shift;
 			done;
