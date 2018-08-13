@@ -28,7 +28,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 - A Synology device that can generate a Let's Encrypt certificate
 - A Synology user with system administrator access (ex: admin)
 - A Gitlab certs folder (for example: /volume1/docker/personal/gitlab/gitlab/data/<b>certs</b>)
-- Inside the Gitlab certs folder, there needs to be 4 files: `gitlab.key`, `gitlab.crt`, `dhparam.pem`, and a `cert.pem` (See: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#copying-certifications-to-gitlab-certs-folder">step 10</a>)
+- Inside the Gitlab certs folder, there needs to be 4 files: `gitlab.key`, `gitlab.crt`, `dhparam.pem`, and a `cert.pem` (see: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#copying-certifications-to-gitlab-certs-folder">step 10</a>)
 - RECOMMENDED: For ease of use, I highly recommend adding <a href="https://synocommunity.com/">Synocommunity package sources</a> to your Synology's Package Center, then installing the Nano text editor on your device. Otherwise, you can use the not-so-user-friendly vi text editor.
 
 
@@ -110,6 +110,14 @@ The idea behind this script is to seamlessly automate the process for updating t
   nano vSC.log
   ```
 
+  Ideally, you'll want to see something like this:
+  ```
+  ------------------------------------ SESSION STARTED ON 08/12/2018 ----------------------------------
+  07:57 PM -- Attempting to validate your current Let's Encrypt certificates.
+  07:57 PM -- You are valid from Aug 5 15:16:14 2018 GMT through Nov 3 15:16:14 2018 GMT.
+  07:57 PM -- No need to update yet! Your certificates will not expire within 7 day(s).
+  ------------------------------------------ END OF SESSION -------------------------------------------
+  ```
 
 ## Automation Through Crontab
 
