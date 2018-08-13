@@ -12,30 +12,29 @@ validateSSLCerts (vSC.sh) is an automated bash script that attempts to validate 
   - [3. SSHing into your Synology NAS](#3-sshing-into-your-synology-nas)
   - [4. Copying the Script into your Let's Encrypt Certificate Folder](#4-copying-the-script-into-your-lets-encrypt-certificate-folder)
   - [5. Testing/Running the Script](#5-testingrunning-the-script)
-- [Advanced Usage - Automation Through Crontab](#advanced-usage---automation-through-crontab)
-- [Using Custom Flags](#using-custom-flags)
+- [Automation Through Crontab](#automation-through-crontab)
+- [Advanced Usage: Custom Flags](#advanced-usage-custom-flags)
 
 
 ## Introduction
 
 The idea behind this script is to seamlessly automate the process for updating the shared certificate across services with minimal downtime.
 
-Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab container before using this script: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6">Let's Encrypt - Synology NAS + sameersbn/docker-gitlab</a>
-
 ⚠️ NOTE: This script is currently in the early beta stages!
 
 ## Requirements
 
+- Have already read the <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6">Let's Encrypt - Synology NAS + sameersbn/docker-gitlab</a> gist
 - A Synology device that can generate a Let's Encrypt certificate
 - A Synology user with system administrator access (ex: admin)
 - A Gitlab certs folder (for example: /volume1/docker/personal/gitlab/gitlab/data/<b>certs</b>)
-- Inside the Gitlab certs folder, there needs to be 4 files: `gitlab.key`, `gitlab.crt`, `dhparam.pem`, and a `cert.pem` (the cert.pem needs to be copied over from the Let's Encrypt certificate folder)
+- Inside the Gitlab certs folder, there needs to be 4 files: `gitlab.key`, `gitlab.crt`, `dhparam.pem`, and a `cert.pem` (See: <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#copying-certifications-to-gitlab-certs-folder">step 10</a>)
 - RECOMMENDED: For ease of use, I highly recommend adding <a href="https://synocommunity.com/">Synocommunity package sources</a> to your Synology's Package Center, then installing the Nano text editor on your device. Otherwise, you can use the not-so-user-friendly vi text editor.
 
 
 ## Installation and Usage
 
-  The following steps should be done in order for simplicity...
+  The following steps need to be done in order...
 
 
 ### 1. Downloading and Making Script Executable
@@ -68,9 +67,9 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
 
 ### 4. Copying the Script into your Let's Encrypt Certificate Folder
 
-- Next, copy the script from the Gitlab certs folder to your Let's Encrypt certifications folder, for example (to find the RANDOM_ALPHANUMERICSTRING folder, follow <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#viewing-synology-generated-certifications">step 9</a> ):
+- Next, copy the script from the Gitlab certs folder to your Let's Encrypt certifications folder, for example (to find the RANDOM_ALPHANUMERIC_STRING folder, follow <a href="https://gist.github.com/mattcarlotta/4d9fdb90376c5d13db2c1b69a2d557a6#viewing-synology-generated-certifications">step 9</a> ):
   ```
-  cp /volume1/docker/personal/gitlab/gitlab/data/certs/vSC.sh /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERICSTRING
+  cp /volume1/docker/personal/gitlab/gitlab/data/certs/vSC.sh /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERIC_STRING
   ```
 
 - Remove the vSC.sh from your Gitlab certs folder:
@@ -78,21 +77,21 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   rm vSC.sh
   ```
 
-  <b>Why did we have to move the script into the Gitlab certs folder if we're just going to copy it to another folder then delete it?</b>
-  - Put simply, Synology DSM restricts SCP/SFTP to directories owned by you. By transferring from the Gitlab certs folder (owned by you), we can then transfer it to the Let's Encrypt certificate folder (owned by root). Alternatively, we could have changed the ownership of the Let's Encrypt folder from root to you, but that may cause unintended consequences.
+  <b>Why did we have to move the script into the Gitlab certs folder if we were just going to copy it to another folder, then delete it?</b>
+  - Put simply, the Synology DSM restricts SCP/SFTP to directories owned by you. By transferring from the Gitlab certs folder (owned by you), we can then transfer it to the Let's Encrypt certificate folder (owned by root). Alternatively, we could have changed the ownership of the Let's Encrypt folder from root to you, but that may cause unintended consequences.
 
 ### 5. Testing/Running the Script
 
 - Next, cd into the Let's Encrypt certifications directory, for example:
   ```
-  cd /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERICSTRING
+  cd /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERIC_STRING
   ```
 
 - Use this command to run the script:
   ```
   ./vSC.sh
   ```
-  See [Using Custom Flags](#using-custom-flags) for advanced configurations.
+  See [Advanced Usage: Custom Flags](#advanced-usage-custom-flags) for custom configurations.
 
 
 - To test if the script worked, cd back into to your gitlab certs folder and check if a `vSC.log` file exists:
@@ -112,7 +111,7 @@ Please read my gist about Let's Encrypt with a Synology NAS running a Gitlab con
   ```
 
 
-## Advanced Usage - Automation Through Crontab
+## Automation Through Crontab
 
 If the script works well when you manually run it, then you can automate it by using crontab.
 
@@ -137,13 +136,13 @@ Now you'll want to add your own job, for example (the below will read as follows
 30      1       *       *       1       root    /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERICSTRING/vSC.sh
 ```
 
-More information on how to configure a crontab can be found here:
+More information on how to configure a crontab job can be found here:
 <a href="https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/">Simplified how to add a job to crontab</a>
 or
 <a href="https://help.ubuntu.com/community/CronHowto">Crontab Manual</a>
 
 
-## Using Custom Flags
+## Advanced Usage: Custom Flags
 
 In order to keep this script as flexible as possible, you can override default options with a flag, for example:
 ```
@@ -185,9 +184,9 @@ OPTIONS:
           maximum log file size in bytes (default: 10000000)
 
      -h, -help
-          help documentation
+          documentation
 ```
 
 ⚠️ NOTES:
 - As noted above, using some flags will update other global variables since some of them rely on each other.
-- If you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name.
+- The random alphanumeric Let's Encrypt certificate folder will be automatically found by the script (as long as the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe`).

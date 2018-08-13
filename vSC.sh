@@ -338,7 +338,7 @@ function _show_help()
 	printf "     ${bold}-ls${normal}, ${bold}-logsize${normal}\n"
 	printf "          maximum log file size in bytes (default: $gLogMaxSize)\n\n"
 	printf "     ${bold}-h${normal}, ${bold}-help${normal}\n"
-	printf "          help documentation\n\n"
+	printf "          documentation\n\n"
 	exit 0
 }
 
