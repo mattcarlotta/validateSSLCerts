@@ -196,4 +196,4 @@ OPTIONS:
 
 ⚠️ NOTES:
 - As noted above, using some flags will update other global variables since some of them rely upon each other.
-- The random alphanumeric Let's Encrypt certificate folder will be automatically found by the script (as long as the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe`).
+- The random alphanumeric Let's Encrypt certificate folder will be automatically found by the script (as long as the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
