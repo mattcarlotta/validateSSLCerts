@@ -20,7 +20,6 @@ validateSSLCerts (vSC.sh) is an automated bash script that attempts to validate 
 
 The idea behind this script is to seamlessly automate the process for updating the shared certificate across services with minimal downtime.
 
-⚠️ NOTE: This script is currently in the early beta stages!
 
 ## Requirements
 
