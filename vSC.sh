@@ -118,7 +118,7 @@ function _create_log_file()
 #===============================================================================##
 ## PRINT MESSAGE -- PRINTS ANY MESSAGES TO vSC.log                               #
 ##==============================================================================##
-function _printMessage()
+function _print_message()
 {
 	local message=$1
 	printf "$gCurrentTime -- $message \n"                                                                                                 >> "$gLogPath"
@@ -147,8 +147,8 @@ function _abort_session()
 	local error=$1
 	_create_log_file
 	_session_active
-	_printMessage "$error"
-	_printMessage "Aborting session."
+	_print_message "$error"
+	_print_message "Aborting session."
 	_end_session
 	_check_log_size
 	exit 1
@@ -160,7 +160,7 @@ function _abort_session()
 ##==============================================================================##
 function _restart_gitlab_container()
 {
-	_printMessage "Restarting gitlab to use the new certifications."
+	_print_message "Restarting gitlab to use the new certifications."
 
 	cd "$gGitlabDir"
 	docker-compose restart gitlab > /dev/null 2>&1
@@ -169,7 +169,7 @@ function _restart_gitlab_container()
 			_abort_session "Uh oh. Gitlab has failed to restart! Check your docker logs to find out why."
 	fi
 
-	_printMessage "Everything looks good. You should be up and running in about 5 minutes."
+	_print_message "Everything looks good. You should be up and running in about 5 minutes."
 }
 
 
@@ -186,7 +186,7 @@ function _create_new_certs()
 
 	chown 1000:1000 "$gGitlabCertDir"/gitlab.key "$gGitlabCertDir"/gitlab.crt "$gGitlabCertDir"/cert.pem
 
-	_printMessage "Added some new certificates to $gGitlabCertDir."
+	_print_message "Added some new certificates to $gGitlabCertDir."
 }
 
 
@@ -206,7 +206,7 @@ function _remove_old_certs()
 			_abort_session "Unable to remove your current certifications."
 	fi
 
-	_printMessage "Removed the old certificates from $gGitlabCertDir."
+	_print_message "Removed the old certificates from $gGitlabCertDir."
 }
 
 
@@ -229,7 +229,7 @@ function _compare_certs()
 
 	if [ "$LECert" =  "$GitCert" ];
 		then
-			_printMessage "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
+			_print_message "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
 			_abort_session "You need to manually renew them before attempting to run this script again."
 	fi
 }
@@ -253,8 +253,8 @@ function _update_certs()
 ##==============================================================================##
 function _expired_certs()
 {
-	_printMessage "Looks like your certifications will expire within $gCertExpireDays day(s)."
-	_printMessage "Attempting to update your certifications."
+	_print_message "Looks like your certifications will expire within $gCertExpireDays day(s)."
+	_print_message "Attempting to update your certifications."
 }
 
 
@@ -265,7 +265,7 @@ function _show_valid_dates()
 {
 	local validStart=$($gCommandPath/openssl x509 -startdate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
 	local validEnd=$($gCommandPath/openssl x509 -enddate -noout -in $gGitlabCertDir/cert.pem | cut -d = -f 2 | sed 's/ \+/ /g')
-	_printMessage "You are valid from $validStart through $validEnd."
+	_print_message "You are valid from $validStart through $validEnd."
 }
 
 
@@ -274,14 +274,14 @@ function _show_valid_dates()
 ##==============================================================================##
 function _validate_certs()
 {
-	_printMessage "Attempting to validate your current Let's Encrypt certificates."
+	_print_message "Attempting to validate your current Let's Encrypt certificates."
 
 	local checkCertStatus=$($gCommandPath/openssl x509 -checkend $(( 86400 * gCertExpireDays )) -in $gGitlabCertDir/cert.pem)
 
 	if [[ $checkCertStatus == "Certificate will not expire" ]];
 		then
 			_show_valid_dates
-			_printMessage "No need to update yet! Your certificates will not expire within $gCertExpireDays day(s)."
+			_print_message "No need to update yet! Your certificates will not expire within $gCertExpireDays day(s)."
 	else
 		_show_valid_dates
 		_expired_certs
@@ -346,7 +346,7 @@ function _show_help()
 #===============================================================================##
 ## PRINT ERROR -- PRINTS FOUND FLAG ERRORS                                       #
 ##==============================================================================##
-function _printError()
+function _print_error()
 {
 	case "$1" in
 		2) _abort_session "The supplied Gitlab certification path: $2 does not exist."
@@ -381,7 +381,7 @@ function _message_store()
 		then
 			for messages in "${gMessageStore[@]}";
 				do
-					_printMessage "$messages"
+					_print_message "$messages"
 			done
 	fi
 }
@@ -434,7 +434,7 @@ function _custom_flags()
 										then
 											if [[ $1 -lt 1  ||  $1 -gt 30 ]];
 												then
-													_printError 1 $1
+													_print_error 1 $1
 												else
 													gCertExpireDays=$1
 													gMessageStore+=("Overriden the certification expires in to: ${gCertExpireDays} day(s).")
@@ -449,7 +449,7 @@ function _custom_flags()
 										then
 											if [ ! -d "$1" ];
 												then
-													_printError 2 $1
+													_print_error 2 $1
 												else
 													gGitlabCertDir=$1
 													gLogPath="$gGitlabCertDir"/vSC.log
@@ -466,7 +466,7 @@ function _custom_flags()
 										then
 											if [ ! -d "$1" ];
 												then
-													_printError 3 $1
+													_print_error 3 $1
 												else
 													gGitlabDir=$1
 													gGitlabCertDir="$gGitlabDir"
@@ -485,7 +485,7 @@ function _custom_flags()
 										then
 											if [ ! -d "$1" ];
 												then
-													_printError 4 $1
+													_print_error 4 $1
 												else
 													gLECertDir=$1
 													gMessageStore+=("Overriden the Let's Encrypt directory path to: ${gLECertDir}.")
@@ -510,7 +510,7 @@ function _custom_flags()
 										then
 											if [[ $1 -lt 2000 || $1 -gt 100000000 ]];
 												then
-														_printError 5 $1
+														_print_error 5 $1
 												else
 													gLogMaxSize=$1
 													gMessageStore+=("Overriden the max log file size to: ${gLogMaxSize} bytes.")
