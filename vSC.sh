@@ -2,7 +2,7 @@
 #
 # Script to validate Lets Encrypt SSL Certifications for Synology NAS's
 #
-# Version 0.0.5b - Copyright (c) 2018 by Matt Carlotta
+# Version 0.0.6b - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
 #     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
@@ -21,20 +21,9 @@
 ## GLOBAL VARIABLES                                                              #
 ##==============================================================================##
 # current script version
-version="0.0.5b"
-
-# bold text
-bold=$(tput bold)
-
-# underline text
-underline=$(tput smul)
-stopunderline=$(tput rmul)
-
-# normal text
-normal=$(tput sgr0)
+version="0.0.6b"
 
 # path used by crontab for running localized commands
-#gCommandPath="/usr/bin" # local
 gCommandPath="/bin" # remote
 
 # Gitlab container path
@@ -48,6 +37,9 @@ gLECertDir="/usr/syno/etc/certificate/_archive" # remote
 
 # Lets Encrypt certifications folder
 gLEFolder="DEFAULT"
+
+# Lets Encrypt certificate renewal
+gRenewCertCommand=$(/usr/syno/sbin/syno-letsencrypt renew-all)
 
 # Gitlab data certificates log path
 gLogPath="$gGitlabCertDir"/vSC.log
@@ -211,40 +203,33 @@ function _remove_old_certs()
 
 
 #===============================================================================##
-## GET 10TH LINE  --  GRABS 10TH LINE OF LE AND GITLAB CERT                      #
-##==============================================================================##
-function get_10th_line()
-{
-	cat $1 | tail +10 | head -n1
-}
-
-
-#===============================================================================##
 ## COMPARE CERTS  --  CHECKS IF LE CERT HAS BEEN UPDATED                         #
 ##==============================================================================##
 function _compare_certs()
 {
-	local LECert=$(get_10th_line $gLECertDir/$gLEFolder/cert.pem)
-	local GitCert=$(get_10th_line $gGitlabCertDir/cert.pem)
+	local LECert=$(sed '1d; $d' $gLECertDir/$gLEFolder/cert.pem)
+	local GitCert=$(sed '1d; $d' $gGitlabCertDir/cert.pem)
 
 	if [ "$LECert" =  "$GitCert" ];
 		then
-			_print_message "Uh oh, it looks like your Let's Encrypt certificates haven't been automatically renewed."
-			_abort_session "You need to manually renew them before attempting to run this script again."
+			_print_message "Uh oh, it looks like your Let's Encrypt certificates failed to be renewed."
+			_abort_session "You will need to manually renew them before attempting to run this script again."
 	fi
 }
 
 
 #===============================================================================##
-## UPDATE CERTS  --  ATTEMPTS TO UPDATE LETS ENCRYPT CERTIFICATES                #
+## UPDATE CERTS  --  ATTEMPTS TO FORCE RENEW LETS ENCRYPT CERTIFICATES           #
 ##==============================================================================##
 function _update_certs()
 {
-	# TODO
-	# This step may not be neccessary...
-	# The Synology NAS may autorenew invalidated certs
-	# If not, need to research how to force renew before gCertExpireDays days
-	printf ""
+	_print_message "Attempting to renew your certifications."
+	# may not be neccessary as the NAS may autorenew invalidated certs
+	$gRenewCertCommand > /dev/null 2>&1
+	if [[ $? -ne 0 ]];
+		then
+			_abort_session "Unable to renew your Let's Encrypt certificates."
+	fi
 }
 
 
@@ -254,7 +239,6 @@ function _update_certs()
 function _expired_certs()
 {
 	_print_message "Looks like your certifications will expire within $gCertExpireDays day(s)."
-	_print_message "Attempting to update your certifications."
 }
 
 
@@ -316,28 +300,28 @@ function _check_paths()
 ##==============================================================================##
 function _show_help()
 {
-	printf "\n${bold}NAME:${normal}\n"
-	printf "      ${bold}validateSSLCerts v$version${normal} - validate and update a Lets Encrypt SSL certification \n"
-	printf "\n${bold}SYNOPSIS:${normal}\n"
-	printf "      ${bold}./vSC.sh${normal} [${underline}OPTIONS${stopunderline}]\n"
-	printf "\n${bold}OPTIONS:${normal}\n"
+	printf "\nNAME:\n"
+	printf "      validateSSLCerts v$version - validate and update a Lets Encrypt SSL certification \n"
+	printf "\nSYNOPSIS:\n"
+	printf "      ./vSC.sh [OPTIONS]\n"
+	printf "\nOPTIONS:\n"
 	printf "     Options below will overwrite their respective defaults (some may have side effects).\n\n"
-	printf "     ${bold}-exp${normal}, ${bold}-expires${normal}\n"
+	printf "     -exp, -expires\n"
 	printf "          check if certificate expires in specified amount of days; min: 1, max: 30 (default: $gCertExpireDays)\n\n"
-	printf "     ${bold}-gc${normal}, ${bold}-gitcertdir${normal}\n"
+	printf "     -gc, -gitcertdir$\n"
 	printf "          Gitlab certificate directory folder (default: $gGitlabCertDir)\n"
 	printf "          side effect: updates vSC.log directory\n\n"
-	printf "     ${bold}-gd${normal}, ${bold}-gitlabdir${normal}\n"
+	printf "     -gd, -gitlabdir$\n"
 	printf "          Gitlab directory folder (default: $gGitlabDir)\n"
 	printf "          side effect: updates Gitlab certificate directory\n"
 	printf "          side effect: updates vSC.log directory\n\n"
-	printf "     ${bold}-led${normal}, ${bold}-letsencryptdir${normal}\n"
+	printf "     -led, -letsencryptdir$\n"
 	printf "          Let's Encrypt directory folder (default: $gLECertDir)\n\n"
-	printf "     ${bold}-lef${normal}, ${bold}-letsencryptfolder${normal}\n"
+	printf "     -lef, -letsencryptfolder$\n"
 	printf "          Let's Encrypt certificate folder (default: automatically calculated via Let's Encrypt directory)\n\n"
-	printf "     ${bold}-ls${normal}, ${bold}-logsize${normal}\n"
+	printf "     -ls, -logsize$\n"
 	printf "          maximum log file size in bytes (default: $gLogMaxSize)\n\n"
-	printf "     ${bold}-h${normal}, ${bold}-help${normal}\n"
+	printf "     -h, -help$\n"
 	printf "          documentation\n\n"
 	exit 0
 }
