@@ -74,7 +74,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 - Remove the vSC.sh from your Gitlab certs folder:
   ```
-  rm vSC.sh
+  rm /volume1/docker/personal/gitlab/gitlab/data/certs/vSC.sh
   ```
 
   <b>Why did we have to move the script into the Gitlab certs folder if we were just going to copy it to another folder, then delete it?</b>
