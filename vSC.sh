@@ -126,7 +126,7 @@ function _printMessage()
 
 
 #===============================================================================##
-## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM 20 LINES     #
+## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM LINES        #
 ##==============================================================================##
 function _check_log_size()
 {
@@ -195,7 +195,7 @@ function _create_new_certs()
 ##==============================================================================##
 function _remove_old_certs()
 {
-	if [[ ! -f "$gGitlabCertDir"/cert.pem || ! -f "$gGitlabCertDir"/gitlab.key || ! -f "$gGitlabCertDir"/gitlab.key ]];
+	if [[ ! -f "$gGitlabCertDir"/cert.pem || ! -f "$gGitlabCertDir"/gitlab.key || ! -f "$gGitlabCertDir"/gitlab.crt ]];
 		then
 			_abort_session "Unable to locate your current certifications in $gGitlabCertDir."
 	fi
@@ -243,7 +243,7 @@ function _update_certs()
 	# TODO
 	# This step may not be neccessary...
 	# The Synology NAS may autorenew invalidated certs
-	# If not, need to research how to attempt to renew before gCertExpireDays days
+	# If not, need to research how to force renew before gCertExpireDays days
 	printf ""
 }
 
@@ -424,6 +424,7 @@ function _custom_flags()
 			while [ "$1" ];
 				do
 					local flag=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
 					if [[ "${flag}" =~ ^[-abcdefghiklmnoprsutvwx]+$ ]];
 						then
 							case "${flag}" in
@@ -439,7 +440,7 @@ function _custom_flags()
 													gMessageStore+=("Overriden the certification expires in to: ${gCertExpireDays} day(s).")
 											fi
 										else
-										_invalid_argument "-e|-expires $1"
+											_invalid_argument "-e|-expires $1"
 									fi
 								;;
 
