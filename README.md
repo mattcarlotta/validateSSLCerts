@@ -56,7 +56,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 - Open a terminal and SSH into your Synology NAS (replace synology_ip_address with your <b>Synology IP</b>) as a <b>system administrator</b>:
   ```
-  ssh admin@SYNOLOGY_IP_ADDRESS -- ex: ssh admin@192.168.1.55
+  ssh admin@synology_ip_address -- ex: ssh admin@192.168.1.55
   ```
 
 - Now, type the following command to elevate yourself to a root user:
@@ -101,7 +101,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 - You should see:
   ```
-  cert.cem gitlab.crt gitlab.key vSC.log
+  cert.cem dhparam.pem gitlab.crt gitlab.key vSC.log
   ```
 
 - You can view the contents of the log by running:
@@ -112,9 +112,9 @@ The idea behind this script is to seamlessly automate the process for updating t
 - Ideally, you'll want to see something like this:
   ```
   ------------------------------------ SESSION STARTED ON 08/12/2018 ----------------------------------
-  07:57 PM -- Attempting to validate your current Let's Encrypt certificates.
-  07:57 PM -- You are valid from Aug 5 15:16:14 2018 GMT through Nov 3 15:16:14 2018 GMT.
-  07:57 PM -- No need to update yet! Your certificates will not expire within 7 day(s).
+  01:30 AM -- Attempting to validate your current Let's Encrypt certificates.
+  01:30 AM -- You are valid from Aug 5 15:16:14 2018 GMT through Nov 3 15:16:14 2018 GMT.
+  01:30 AM -- No need to update yet! Your certificates will not expire within 7 day(s).
   ------------------------------------------ END OF SESSION -------------------------------------------
   ```
 
