@@ -221,7 +221,7 @@ And update the following script variables (<b>ONLY CHANGE THESE VARIABLES</b>):
 gCronMin=30     # 0-59 minutes
 gCronHr=1       # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
 gCronDay="*"    # 1-31 days (1st ... 31st)
-gCronMon="*"    # 1-12 months (January = 1 ... December = 12)
+gCronMon="*"    # 1-12 months (1 = January ... 12 = December)
 gCronWkday=1    # 0-7 Sunday-Monday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
 ```
 (Please note that asterisks `"*"` are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
