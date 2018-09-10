@@ -140,6 +140,9 @@ SYNOPSIS:
 OPTIONS:
 		 Options below will overwrite their respective defaults (some may have side effects).
 
+		 -ac, -addcron
+					adds a new cron job to /etc/crontab
+					
 		 -exp, -expires
 					check if certificate expires in specified amount of days; min: 1, max: 30 (default: 7)
 
@@ -160,9 +163,6 @@ OPTIONS:
 
 		 -ls, -logsize
 					maximum log file size in bytes (default: 10000000)
-
-		 -ac, -addcron
-					adds a new cron job to /etc/crontab
 
 		 -h, -help
 					documentation
