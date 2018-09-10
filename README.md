@@ -161,7 +161,7 @@ OPTIONS:
 		 -ls, -logsize
 					maximum log file size in bytes (default: 10000000)
 
-		 -updatecron
+		 -uc, -updatecron
 					adds a new cron job to /etc/crontab
 
 		 -h, -help
@@ -170,8 +170,8 @@ OPTIONS:
 
 ⚠️ NOTES:
 - As noted above, using some flags will update other global variables since some of them rely upon each other.
-- The random alphanumeric Let's Encrypt certificate folder will be automatically located by the script (provided that the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
-- If you've already set up a cron job using this script, but decide to add or change any of the custom flags afterward, then you'll need to add the `-updatecron` flag so that a new cron job will be added to reflect the changes (old cron jobs will be automatically removed).
+- The random alphanumeric Let's Encrypt certificate folder will automatically be located by the script (provided that the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
+- If you've already set up a cron job using this script, but decide to add or change any of the custom flags afterward, then you'll need to add the `-uc` or `-updatecron` flag so that a new cron job will be added to reflect the changes (old cron jobs will automatically be removed).
 
 
 ## Automation Through Crontab
@@ -180,26 +180,11 @@ If the script works well when you manually run it, then you can automate it by u
 
 More information on what a cron is can be found here: <a href="https://help.ubuntu.com/community/CronHowto">Crontab Manual</a>
 
-Currently, your crontab will be set up like so:
-```
-MAILTO=""
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin
-#minute hour    mday    month   wday    who     command
-0       0       1       *       *       root    /usr/syno/bin/syno_disk_health_record
-30      4       *       *       1,5     root    /usr/syno/bin/synoschedtask --run id=1
-0       0       26      *       *       root    /usr/syno/bin/synoschedtask --run id=2
-```
-
-You can confirm this by running:
-```
-cat /etc/crontab
-```
-
 ### Option 1: Implementing a Preconfigured Cron Job
 
 Simply add the following flag to implement a preconfigured job:
 ```
-./vSC.sh -updatecron
+./vSC.sh -uc
 ```
 
 Including this flag will add the following job to /etc/crontab:
@@ -216,22 +201,26 @@ Edit the script:
 nano /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERIC_STRING/vSC.sh
 ```
 
-And update the following script variables (<b>ONLY CHANGE THESE VARIABLES</b>):
+And only update the following script variables:
 ```
 gCronMin=30     # 0-59 minutes
 gCronHr=1       # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
 gCronDay="*"    # 1-31 days (1st ... 31st)
-gCronMon="*"    # 1-12 months (1 = January ... 12 = December)
-gCronWkday=1    # 0-7 Sunday-Monday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
+gCronMon="*"    # 1-12 month (1 = January ... 12 = December)
+gCronWkday=1    # 0-7 weekday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
 ```
-(Please note that asterisks `"*"` are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
-<b>BE ADVISED: There aren't any sanitation checks here, so please follow the notes above and only use numbers within the specified ranges or numbers with dashes/commas `"5-10"` `"5, 10"` or an asterisk `"*"` in double quotes.</b>)
+Please note that asterisks are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
 
-To save your changes, press `ctrl + o` then press `y` then `enter` to save, then `ctrl + x` to exit out of the nano editor.
+⚠️ <b>BE ADVISED: Due to the flexible nature of configuring cron jobs, there aren't any sanitation checks on the above script variables. Please follow the notes above and only use numbers within the specified ranges. Special use cases, such as ranged parameters `"5-10"` or blocked parameters `"5, 10"` or an asterisk `"*"`, must be wrapped in double quotes. Special strings utilizing the `"@"` short syntax aren't supported in this script.</b>
+
+To save the script changes:
+- press `ctrl + o` (this prompts to save the script)
+- press `y`, then `enter` (this confirms saving the script)
+- press `ctrl + x` (this exits out of the nano editor)
 
 Then run the following command to create/update the cron job:
 ```
-./vSC.sh -updatecron
+./vSC.sh -uc
 ```
 
 More information on how to configure a cron job can be found here:

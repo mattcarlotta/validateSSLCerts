@@ -2,7 +2,7 @@
 #
 # Script to validate Lets Encrypt SSL Certifications for Synology NAS's
 #
-# Version 0.0.7b - Copyright (c) 2018 by Matt Carlotta
+# Version 0.0.8b - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
 #     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
@@ -21,19 +21,19 @@
 ## GLOBAL VARIABLES                                                              #
 ##==============================================================================##
 # current script version
-version="0.0.7b"
+version="0.0.8b"
 
 # path used by crontab for running localized commands
 gCommandPath="/bin"
 
 # crontab defaults
-gCronDir="/etc/crontab"
-gCronMin=30     # 0-59 minutes
-gCronHr=1       # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
-gCronDay="*"    # 1-31 days (1st ... 31st)
-gCronMon="*"    # 1-12 months (1 = January ... 12 = December)
-gCronWkday=1    # 0-7 Sunday-Monday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
-gCronUpdate=false
+gCronDir="/etc/crontab" # crontab directory
+gCronMin=30 # 0-59 minutes
+gCronHr=1 # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
+gCronDay="*" # 1-31 days (1st ... 31st)
+gCronMon="*" # 1-12 month (1 = January ... 12 = December)
+gCronWkday=1 # 0-7 weekday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
+gCronUpdate=false # determine whether to update cron job
 
 # Gitlab container path
 gGitlabDir="/volume1/docker/personal/gitlab"
@@ -125,7 +125,6 @@ function _print_message()
 	printf "$gCurrentTime -- $message \n"                                                                                                     >> "$gLogPath"
 }
 
-
 #===============================================================================##
 ## SET CRONJOB -- SETS UP AN AUTOMATED CRON JOB FOR RUNNING THE SCRIPT           #
 ##==============================================================================##
@@ -134,7 +133,7 @@ function _set_cron_job()
 	if [ "$gCronUpdate" = true ];
 		then
 			local cronjob=$(grep "vSC.sh" $gCronDir)
-			local args=$(echo $@ | sed -e "s/-updatecron//")
+			local args=$(echo $@ | sed -e 's/-updatecron//g; s/-uc//g')
 
 			if [ ! -z "$cronjob" ];
 				then
@@ -352,7 +351,7 @@ function _show_help()
 	printf "          Let's Encrypt certificate folder (default: automatically calculated via Let's Encrypt directory)\n\n"
 	printf "     -ls, -logsize\n"
 	printf "          maximum log file size in bytes (default: $gLogMaxSize)\n\n"
-	printf "     -updatecron\n"
+	printf "     -uc, -updatecron\n"
 	printf "          adds a new cron job to /etc/crontab\n\n"
 	printf "     -h, -help\n"
 	printf "          documentation\n\n"
@@ -537,7 +536,7 @@ function _custom_flags()
 									fi
 								;;
 
-								-updatecron)
+								-uc|-updatecron)
 										gCronUpdate=true
 										gMessageStore+=("Overriden the cron update to true.")
 								;;
