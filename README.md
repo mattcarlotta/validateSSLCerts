@@ -73,7 +73,7 @@ The following steps need to be done in order...
 	cp /volume1/docker/personal/gitlab/gitlab/data/certs/vSC.sh /usr/syno/etc/certificate/_archive/RANDOM_ALPHANUMERIC_STRING
 	```
 
-- Remove the vSC.sh from your Gitlab certs folder:
+- Remove the script from your Gitlab certs folder:
 	```
 	rm /volume1/docker/personal/gitlab/gitlab/data/certs/vSC.sh
 	```
@@ -161,7 +161,7 @@ OPTIONS:
 		 -ls, -logsize
 					maximum log file size in bytes (default: 10000000)
 
-		 -uc, -updatecron
+		 -ac, -addcron
 					adds a new cron job to /etc/crontab
 
 		 -h, -help
@@ -171,7 +171,7 @@ OPTIONS:
 ⚠️ NOTES:
 - As noted above, using some flags will update other global variables since some of them rely upon each other.
 - The random alphanumeric Let's Encrypt certificate folder will automatically be located by the script (provided that the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
-- If you've already set up a cron job using this script, but decide to add or change any of the custom flags afterward, then you'll need to add the `-uc` or `-updatecron` flag so that a new cron job will be added to reflect the changes (old cron jobs will automatically be removed).
+- If you've already set up a cron job using this script, but decide to add or change any of the custom flags afterward, then you'll need to add the `-ac` or `-addcron` flag so that a new cron job will be added to reflect the changes (old cron jobs will automatically be removed).
 
 
 ## Automation Through Crontab
@@ -187,7 +187,7 @@ More information on how to configure a cron job can be found here:
 
 Simply add the following flag to implement a preconfigured job:
 ```
-./vSC.sh -uc
+./vSC.sh -ac
 ```
 
 Including this flag will add the following job to /etc/crontab:
@@ -223,5 +223,5 @@ To save the script changes:
 
 Then run the following command to create/update the cron job:
 ```
-./vSC.sh -uc
+./vSC.sh -ac
 ```

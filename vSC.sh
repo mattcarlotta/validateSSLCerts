@@ -133,7 +133,7 @@ function _set_cron_job()
 	if [ "$gCronUpdate" = true ];
 		then
 			local cronjob=$(grep "vSC.sh" $gCronDir)
-			local args=$(echo $@ | sed -e 's/-updatecron//g; s/-uc//g')
+			local args=$(echo $@ | sed -e 's/-addcron//g; s/-ac//g')
 
 			if [ ! -z "$cronjob" ];
 				then
@@ -336,6 +336,8 @@ function _show_help()
 	printf "      ./vSC.sh [OPTIONS]\n"
 	printf "\nOPTIONS:\n"
 	printf "     Options below will overwrite their respective defaults (some may have side effects).\n\n"
+	printf "     -ac, -addcron\n"
+	printf "          adds a new cron job to /etc/crontab\n\n"
 	printf "     -exp, -expires\n"
 	printf "          check if certificate expires in specified amount of days; min: 1, max: 30 (default: $gCertExpireDays)\n\n"
 	printf "     -gc, -gitcertdir\n"
@@ -351,8 +353,6 @@ function _show_help()
 	printf "          Let's Encrypt certificate folder (default: automatically calculated via Let's Encrypt directory)\n\n"
 	printf "     -ls, -logsize\n"
 	printf "          maximum log file size in bytes (default: $gLogMaxSize)\n\n"
-	printf "     -uc, -updatecron\n"
-	printf "          adds a new cron job to /etc/crontab\n\n"
 	printf "     -h, -help\n"
 	printf "          documentation\n\n"
 	exit 0
@@ -445,6 +445,11 @@ function _custom_flags()
 						then
 							case "${flag}" in
 
+								-ac|-addcron)
+										gCronUpdate=true
+										gMessageStore+=("Overriden the cron update to true.")
+								;;
+
 								-exp|-expires) shift
 									if [[ "$1" =~ ^[0-9]+$ ]];
 										then
@@ -534,11 +539,6 @@ function _custom_flags()
 										else
 											_invalid_argument "-ls|-logsize $1"
 									fi
-								;;
-
-								-uc|-updatecron)
-										gCronUpdate=true
-										gMessageStore+=("Overriden the cron update to true.")
 								;;
 
 								*) _invalid_argument "$1"
