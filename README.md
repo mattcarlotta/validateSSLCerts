@@ -35,7 +35,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 ## Installation and Usage
 
-	The following steps need to be done in order...
+The following steps need to be done in order...
 
 
 ### 1. Downloading and Making Script Executable
