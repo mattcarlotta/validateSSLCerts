@@ -179,6 +179,7 @@ OPTIONS:
 If the script works well when you manually run it, then you can automate it by using crontab.
 
 More information on what a cron is can be found here: <a href="https://help.ubuntu.com/community/CronHowto">Crontab Manual</a>
+
 More information on how to configure a cron job can be found here:
 <a href="https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/">Simplified how to add a job to crontab</a>
 
