@@ -225,7 +225,7 @@ gCronMon="*"    # 1-12 months (January = 1 ... December = 12)
 gCronWkday=1    # 0-7 Sunday-Monday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
 ```
 (Please note that asterisks `"*"` are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
-<b>BE ADVISED: There aren't any sanitation checks here, so please follow the notes above and only use numbers within the specified ranges or numbers with dashes/commas `"5-10"` `"5, 10"` or an asterisk must be specified in double quotes `"*"`</b>)
+<b>BE ADVISED: There aren't any sanitation checks here, so please follow the notes above and only use numbers within the specified ranges or numbers with dashes/commas `"5-10"` `"5, 10"` or an asterisk `"*"` must be specified in double quotes.</b>)
 
 To save your changes, press `ctrl + o` then press `y` then `enter` to save, then `ctrl + x` to exit out of the nano editor.
 
