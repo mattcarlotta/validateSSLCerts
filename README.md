@@ -143,7 +143,7 @@ OPTIONS:
 
 		 -ac, -addcron
 					adds a new cron job to /etc/crontab (default: runs the script every Monday at 1:30am)
-					side effect: any other specified custom flag options will be also appended to the cron job
+					side effect: any other specified custom flag options will also be appended to the cron job
 
 		 -exp, -expires
 					check if certificate expires in specified amount of days; min: 1, max: 30 (default: 7)

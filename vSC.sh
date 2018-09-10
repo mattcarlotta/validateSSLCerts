@@ -338,7 +338,7 @@ function _show_help()
 	printf "     Options below will overwrite their respective defaults (some may have side effects).\n\n"
 	printf "     -ac, -addcron\n"
 	printf "          adds a new cron job to /etc/crontab (default: runs the script every Monday at 1:30am)\n"
-	printf "          side effect: any other specified custom flag options will be also appended to the cron job\n\n"
+	printf "          side effect: any other specified custom flag options will also be appended to the cron job\n\n"
 	printf "     -exp, -expires\n"
 	printf "          check if certificate expires in specified amount of days; min: 1, max: 30 (default: $gCertExpireDays)\n\n"
 	printf "     -gc, -gitcertdir\n"
