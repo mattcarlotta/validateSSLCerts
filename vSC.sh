@@ -2,7 +2,7 @@
 #
 # Script to validate Lets Encrypt SSL Certifications for Synology NAS's
 #
-# Version 0.0.6b - Copyright (c) 2018 by Matt Carlotta
+# Version 0.0.7b - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
 #     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
@@ -21,19 +21,28 @@
 ## GLOBAL VARIABLES                                                              #
 ##==============================================================================##
 # current script version
-version="0.0.6b"
+version="0.0.7b"
 
 # path used by crontab for running localized commands
-gCommandPath="/bin" # remote
+gCommandPath="/bin"
+
+# crontab defaults
+gCronDir="/etc/crontab"
+gCronMin=30     # 0-59 minutes
+gCronHr=1       # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
+gCronDay="*"    # 1-31 days (1st ... 31st)
+gCronMon="*"    # 1-12 month (January = 1 ... December = 12)
+gCronWkday=1    # 0-7 Sunday-Monday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
+gCronUpdate=false
 
 # Gitlab container path
 gGitlabDir="/volume1/docker/personal/gitlab"
 
 # Gitlab data certificates path
-gGitlabCertDir="$gGitlabDir"/gitlab/data/certs # remote
+gGitlabCertDir="$gGitlabDir"/gitlab/data/certs
 
 # Let's Encrypt certficate directory
-gLECertDir="/usr/syno/etc/certificate/_archive" # remote
+gLECertDir="/usr/syno/etc/certificate/_archive"
 
 # Lets Encrypt certifications folder
 gLEFolder="DEFAULT"
@@ -118,6 +127,28 @@ function _print_message()
 
 
 #===============================================================================##
+## SET CRONJOB -- SETS UP AN AUTOMATED CRON JOB FOR RUNNING THE SCRIPT           #
+##==============================================================================##
+function _set_cron_job()
+{
+	if [ "$gCronUpdate" = true ];
+		then
+			local cronjob=$(grep "vSC.sh" $gCronDir)
+			local args=$(echo $@ | sed -e "s/-updatecron//")
+
+			if [ ! -z "$cronjob" ];
+				then
+					sed -i "/.vSC.sh/d" $gCronDir
+					_print_message "Removed a previous cron job from your crontab."
+			fi
+
+			printf "$gCronMin      $gCronHr       $gCronDay       $gCronMon       $gCronWkday       root    $gLECertDir/$gLEFolder/vSC.sh $args"                                                                                                                            >> "$gCronDir"
+			_print_message "Added a new cron job to your crontab."
+	fi
+}
+
+
+#===============================================================================##
 ## CHECK LOG SIZE -- IF FILE IS LARGER THAN gLogMaxSize Bytes, TRIM LINES        #
 ##==============================================================================##
 function _check_log_size()
@@ -166,7 +197,7 @@ function _restart_gitlab_container()
 
 
 #===============================================================================##
-## CREATE NEW CERTS -- CREATES NEW LETS ENCRYPT CERTIFICATIONS FOR GITLAB        #
+## CREATE NEW CERTS -- CREATES NEW LETS ENCRYPTgCronUpdate CERTIFICATIONS FOR GITLAB        #
 ##==============================================================================##
 function _create_new_certs()
 {
@@ -308,20 +339,22 @@ function _show_help()
 	printf "     Options below will overwrite their respective defaults (some may have side effects).\n\n"
 	printf "     -exp, -expires\n"
 	printf "          check if certificate expires in specified amount of days; min: 1, max: 30 (default: $gCertExpireDays)\n\n"
-	printf "     -gc, -gitcertdir$\n"
+	printf "     -gc, -gitcertdir\n"
 	printf "          Gitlab certificate directory folder (default: $gGitlabCertDir)\n"
 	printf "          side effect: updates vSC.log directory\n\n"
-	printf "     -gd, -gitlabdir$\n"
+	printf "     -gd, -gitlabdir\n"
 	printf "          Gitlab directory folder (default: $gGitlabDir)\n"
 	printf "          side effect: updates Gitlab certificate directory\n"
 	printf "          side effect: updates vSC.log directory\n\n"
-	printf "     -led, -letsencryptdir$\n"
+	printf "     -led, -letsencryptdir\n"
 	printf "          Let's Encrypt directory folder (default: $gLECertDir)\n\n"
-	printf "     -lef, -letsencryptfolder$\n"
+	printf "     -lef, -letsencryptfolder\n"
 	printf "          Let's Encrypt certificate folder (default: automatically calculated via Let's Encrypt directory)\n\n"
-	printf "     -ls, -logsize$\n"
+	printf "     -ls, -logsize\n"
 	printf "          maximum log file size in bytes (default: $gLogMaxSize)\n\n"
-	printf "     -h, -help$\n"
+	printf "     -updatecron\n"
+	printf "          adds a new cron job to /etc/crontab\n\n"
+	printf "     -h, -help\n"
 	printf "          documentation\n\n"
 	exit 0
 }
@@ -504,6 +537,11 @@ function _custom_flags()
 									fi
 								;;
 
+								-updatecron)
+										gCronUpdate=true
+										gMessageStore+=("Overriden the cron update to true.")
+								;;
+
 								*) _invalid_argument "$1"
 								;;
 						esac
@@ -528,6 +566,7 @@ function main()
 	_message_store
 	_check_paths
 	_validate_certs
+	_set_cron_job "$@"
 	_end_session
 	_check_log_size
 	exit 0
