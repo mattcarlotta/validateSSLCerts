@@ -108,7 +108,7 @@ The idea behind this script is to seamlessly automate the process for updating t
 
 - You can view the contents of the log by running:
 	```
-	nano vSC.log
+	cat vSC.log
 	```
 
 - Ideally, you'll want to see something like this:
@@ -170,7 +170,7 @@ OPTIONS:
 
 ⚠️ NOTES:
 - As noted above, using some flags will update other global variables since some of them rely upon each other.
-- The random alphanumeric Let's Encrypt certificate folder will automatically be located by the script (provided that the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
+- The random alphanumeric Let's Encrypt certificate folder will be automatically located by the script (provided that the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
 - If you've already set up a cron job using this script, but decide to add or change any of the custom flags afterward, then you'll need to add the `-updatecron` flag so that a new cron job will be added to reflect the changes (old cron jobs will be automatically removed).
 
 
@@ -221,12 +221,18 @@ And update the following script variables (<b>ONLY CHANGE THESE VARIABLES</b>):
 gCronMin=30     # 0-59 minutes
 gCronHr=1       # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
 gCronDay="*"    # 1-31 days (1st ... 31st)
-gCronMon="*"    # 1-12 month (January = 1 ... December = 12)
+gCronMon="*"    # 1-12 months (January = 1 ... December = 12)
 gCronWkday=1    # 0-7 Sunday-Monday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
 ```
-(Please note that asterisks are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`. BE ADVISED: There aren't any sanitation checks here, so please follow the notes above and only use numbers within the specified ranges or an asterisk in double quotes)
+(Please note that asterisks `"*"` are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
+<b>BE ADVISED: There aren't any sanitation checks here, so please follow the notes above and only use numbers within the specified ranges and numbers with dashes/commas (`"5-10"` or `"5, 10"` ) or an asterisk must be in double quotes (`"*"`)</b>)
 
 To save your changes, press `ctrl + o` then press `y` then `enter` to save, then `ctrl + x` to exit out of the nano editor.
+
+Then run the following command to create/update the cron job:
+```
+./vSC.sh -updatecron
+```
 
 More information on how to configure a cron job can be found here:
 <a href="https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/">Simplified how to add a job to crontab</a>
