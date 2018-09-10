@@ -124,8 +124,9 @@ The following steps need to be done in order...
 
 In order to keep this script as flexible as possible, you can override default options with a flag, for example:
 ```
-./vSC.sh -ls 2000 -gd /srv/docker/gitlab -led /etc/letsencrypt
+./vSC.sh -ls 2000 -gd /srv/docker/gitlab -led /etc/letsencrypt -ac
 ```
+(This can be read as: Run the script, but change: max log size to 2000 bytes, gitlab directory to /srv/docker/gitlab, lets encrypt directory to /etc/letsencrypt, and create a new cron job with these custom options)
 
 You can view all of the custom flag options by running this command:
 ```
@@ -141,8 +142,9 @@ OPTIONS:
 		 Options below will overwrite their respective defaults (some may have side effects).
 
 		 -ac, -addcron
-					adds a new cron job to /etc/crontab
-					
+					adds a new cron job to /etc/crontab (default: runs the script every Monday at 1:30am)
+					side effect: any other specified custom flag options will be also appended to the cron job
+
 		 -exp, -expires
 					check if certificate expires in specified amount of days; min: 1, max: 30 (default: 7)
 
@@ -171,7 +173,7 @@ OPTIONS:
 ⚠️ NOTES:
 - As noted above, using some flags will update other global variables since some of them rely upon each other.
 - The random alphanumeric Let's Encrypt certificate folder will automatically be located by the script (provided that the Let's Encrypt directory is correct). However, if you have multiple certificate folders, then you'll need to use the `-lef` or `-letsencryptfolder` flag followed by the folder name (for example:`-lef 0rOTRe` or `-letsencryptfolder 0rOTRe`).
-- If you've already set up a cron job using this script, but decide to add or change any of the custom flags afterward, then you'll need to add the `-ac` or `-addcron` flag so that a new cron job will be added to reflect the changes (old cron jobs will automatically be removed).
+- If you've already set up a cron job using this script, but decide to add or change any of the custom flag options afterward, then you'll need to add the `-ac` or `-addcron` flag alongside any other specified custom flag options, so that a new cron job will be added to reflect the changes (old cron jobs will automatically be removed).
 
 
 ## Automation Through Crontab
@@ -187,7 +189,7 @@ More information on how to configure a cron job can be found here:
 
 Simply add the following flag to implement a preconfigured job:
 ```
-./vSC.sh -ac
+./vSC.sh -ac [OPTIONS]
 ```
 
 Including this flag will add the following job to /etc/crontab:
@@ -214,7 +216,7 @@ gCronWkday=1    # 0-7 weekday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturd
 ```
 Please note that asterisks are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
 
-⚠️ <b>BE ADVISED: Due to the flexible nature of configuring cron jobs, there aren't any sanitation checks on the above script variables. Please follow the notes above and only use numbers within the specified ranges. Special use cases, such as ranged parameters `"5-10"` or blocked parameters `"5, 10"` or an asterisk `"*"`, must be wrapped in double quotes. Special strings utilizing the `"@"` short syntax aren't supported in this script.</b>
+⚠️ BE ADVISED: Due to the flexible nature of configuring cron jobs, there aren't any sanitation checks on the above script variables. Please follow the notes above and only use numbers within the specified ranges. Special use cases, such as ranged parameters `"5-10"` or blocked parameters `"5, 10"` or an asterisk `"*"`, must be wrapped in double quotes. Special strings utilizing the `"@"` short syntax aren't supported in this script.
 
 To save the script changes:
 - press `ctrl + o` (this prompts to save the script)
@@ -223,5 +225,5 @@ To save the script changes:
 
 Then run the following command to create/update the cron job:
 ```
-./vSC.sh -ac
+./vSC.sh -ac [OPTIONS]
 ```
