@@ -135,7 +135,7 @@ You can view all of the custom flag options by running this command:
 or find them here:
 ```
 SYNOPSIS:
-			./vSC.sh [OPTIONS]
+		./vSC.sh [OPTIONS]
 
 OPTIONS:
 		 Options below will overwrite their respective defaults (some may have side effects).
