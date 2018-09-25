@@ -2,7 +2,7 @@
 #
 # Script to validate Lets Encrypt SSL Certifications for Synology NAS's
 #
-# Version 0.0.8b - Copyright (c) 2018 by Matt Carlotta
+# Version 0.0.9b - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
 #     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
@@ -21,7 +21,7 @@
 ## GLOBAL VARIABLES                                                              #
 ##==============================================================================##
 # current script version
-version="0.0.8b"
+version="0.0.9b"
 
 # path used by crontab for running localized commands
 gCommandPath="/bin"
@@ -30,8 +30,8 @@ gCommandPath="/bin"
 gCronDir="/etc/crontab" # crontab directory
 gCronMin=30 # 0-59 minutes
 gCronHr=1 # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
-gCronDay="*" # 1-31 days (1st ... 31st)
-gCronMon="*" # 1-12 month (1 = January ... 12 = December)
+gCronDay=* # 1-31 days (1st ... 31st)
+gCronMon=* # 1-12 month (1 = January ... 12 = December)
 gCronWkday=1 # 0-7 weekday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
 gCronUpdate=false # determine whether to update cron job
 
@@ -122,7 +122,7 @@ function _create_log_file()
 function _print_message()
 {
 	local message=$1
-	printf "$gCurrentTime -- $message \n"                                                                                                     >> "$gLogPath"
+	printf "$gCurrentTime -- $message \n"                                                                                                       >> "$gLogPath"
 }
 
 #===============================================================================##
@@ -141,7 +141,7 @@ function _set_cron_job()
 					_print_message "Removed a previous cron job from your crontab."
 			fi
 
-			printf "$gCronMin      $gCronHr       $gCronDay       $gCronMon       $gCronWkday       root    $gLECertDir/$gLEFolder/vSC.sh $args"  >> "$gCronDir"
+			echo "$gCronMin	$gCronHr	$gCronDay	$gCronMon	$gCronWkday	root	$gLECertDir/$gLEFolder/vSC.sh $args"  >> "$gCronDir"
 			_print_message "Added a new cron job to your crontab."
 	fi
 }
@@ -448,7 +448,7 @@ function _custom_flags()
 
 								-ac|-addcron)
 										gCronUpdate=true
-										gMessageStore+=("Overriden the cron update to true.")
+										gMessageStore+=("Overriden the cron update to: true.")
 								;;
 
 								-exp|-expires) shift

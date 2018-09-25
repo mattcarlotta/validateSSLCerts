@@ -210,13 +210,13 @@ And only update the following script variables:
 ```
 gCronMin=30     # 0-59 minutes
 gCronHr=1       # 0-23 hours (0 = 12:00am  ... 23:59 = 11:59pm)
-gCronDay="*"    # 1-31 days (1st ... 31st)
-gCronMon="*"    # 1-12 month (1 = January ... 12 = December)
+gCronDay=*      # 1-31 days (1st ... 31st)
+gCronMon=*      # 1-12 month (1 = January ... 12 = December)
 gCronWkday=1    # 0-7 weekday (Sunday = 0/7, Monday = 1, Tuesday = 2, ... Saturday = 6)
 ```
 Please note that asterisks are wildcards, where they'll repeat the command every minute/hour/day/etc unless specified -- with the exception that `gCronWkday` overwrites `gCronDay`.
 
-⚠️ BE ADVISED: Due to the flexible nature of configuring cron jobs, there aren't any sanitation checks on the above script variables. Please follow the notes above and only use numbers within the specified ranges. Special use cases, such as ranged parameters `"5-10"` or blocked parameters `"5, 10"` or an asterisk `"*"`, must be wrapped in double quotes. Special strings utilizing the `"@"` short syntax aren't supported in this script.
+⚠️ BE ADVISED: Due to the flexible nature of configuring cron jobs, there aren't any sanitation checks on the above script variables. Please follow the notes above and only use numbers within the specified ranges. Special use cases, such as ranged parameters `5-10` or blocked parameters `5, 10` or an asterisk `*`, will work as expected. However, special strings utilizing the `@` short syntax aren't supported in this script.
 
 To save the script changes:
 - press `ctrl + o` (this prompts to save the script)
