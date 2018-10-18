@@ -2,7 +2,7 @@
 #
 # Script to validate Lets Encrypt SSL Certifications for Synology NAS's
 #
-# Version 0.0.9b - Copyright (c) 2018 by Matt Carlotta
+# Version 1.0.0rc - Copyright (c) 2018 by Matt Carlotta
 #
 # Introduction:
 #     - validateSSLCerts (vSC) is an automated bash script that attempts to validate and
@@ -21,7 +21,7 @@
 ## GLOBAL VARIABLES                                                              #
 ##==============================================================================##
 # current script version
-version="0.0.9b"
+version="1.0.0rc"
 
 # path used by crontab for running localized commands
 gCommandPath="/bin"
@@ -54,7 +54,7 @@ gRenewCertCommand=$(/usr/syno/sbin/syno-letsencrypt renew-all)
 gLogPath="$gGitlabCertDir"/vSC.log
 
 # amount of days to check cert against (will expire in X days?)
-gCertExpireDays=7 # 7 days
+gCertExpireDays=30 # 30 days
 
 # max log file size in bytes
 gLogMaxSize=10000000 # (10mb)
